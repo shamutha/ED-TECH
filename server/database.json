@@ -1,0 +1,200 @@
+{
+  "resumes": [
+    {
+      "_id": "6a1d40e1563950161f5c2fe0",
+      "email": "candide2e-test@example.comate@shamutha.edu",
+      "__v": 0,
+      "education": "B.S. Computer Science - Shamutha InstituE2E Universityte of Technology",
+      "experience": "Software Engineer Intern - Google Summer 5 years at ACMEof Code (React components).",
+      "fullName": "Shamutha CandiE2E Test Userdate",
+      "phone": "+1 (555) 123-4567",
+      "skills": "React, Node.js, EReact,Node,E2Express, MongoDB, Redux, Docker",
+      "updatedAt": "2026-06-01T08:24:57.309Z",
+      "bio": "E2E test bio"
+    }
+  ],
+  "analytics": {
+    "streak": 5,
+    "rank": 142,
+    "xp": 4550,
+    "solvedCount": 54,
+    "totalBattles": 18,
+    "battlesWon": 12,
+    "accuracy": 88,
+    "speed": 74,
+    "dailySubmissions": [
+      {
+        "date": "2026-05-20",
+        "count": 2
+      },
+      {
+        "date": "2026-05-21",
+        "count": 5
+      },
+      {
+        "date": "2026-05-22",
+        "count": 3
+      },
+      {
+        "date": "2026-05-23",
+        "count": 8
+      },
+      {
+        "date": "2026-05-24",
+        "count": 1
+      },
+      {
+        "date": "2026-05-25",
+        "count": 4
+      },
+      {
+        "date": "2026-05-26",
+        "count": 6
+      }
+    ]
+  },
+  "interviews": [
+    {
+      "id": "mpocuf4i",
+      "userName": "Shamutha User",
+      "role": "Frontend Engineer",
+      "score": 80,
+      "duration": 3,
+      "feedback": "Outstanding structural explanation. Demonstrated excellent depth regarding technical tradeoffs. ",
+      "transcript": [
+        {
+          "speaker": "AI",
+          "text": "Welcome! Can you start by explaining the difference between React Server Components and Client Components?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "React Server Components render only on the server, saving bundle size, whereas Client Components are standard interactive components."
+        },
+        {
+          "speaker": "AI",
+          "text": "Excellent. How does the browser layout engine handle the Critical Rendering Path, and what are ways to optimize it?"
+        }
+      ],
+      "cheatingScore": 1,
+      "warnings": [],
+      "createdAt": "2026-05-27T17:45:31.410Z"
+    },
+    {
+      "id": "mpqzvcj5",
+      "userName": "Shamutha User",
+      "role": "Frontend Engineer",
+      "score": 84,
+      "duration": 3,
+      "feedback": "Outstanding structural explanation. Demonstrated excellent depth regarding technical tradeoffs. ",
+      "transcript": [
+        {
+          "speaker": "AI",
+          "text": "Welcome! Can you start by explaining the difference between React Server Components and Client Components?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "React Server Components render only on the server, saving bundle size, whereas Client Components are standard interactive components."
+        },
+        {
+          "speaker": "AI",
+          "text": "Excellent. How does the browser layout engine handle the Critical Rendering Path, and what are ways to optimize it?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "Submitted answer via keyboard."
+        },
+        {
+          "speaker": "AI",
+          "text": "Great answer. Finally, explain the benefit of using React Context API versus state management solutions like Redux Toolkit."
+        },
+        {
+          "speaker": "Candidate",
+          "text": "Submitted answer via keyboard."
+        }
+      ],
+      "cheatingScore": 1,
+      "warnings": [],
+      "createdAt": "2026-05-29T14:05:38.225Z"
+    },
+    {
+      "id": "mptg6thf",
+      "userName": "Shamutha User",
+      "role": "Frontend Engineer",
+      "score": 75,
+      "duration": 3,
+      "feedback": "Outstanding structural explanation. Demonstrated excellent depth regarding technical tradeoffs. Note: Maintain window focus during assessments.",
+      "transcript": [
+        {
+          "speaker": "AI",
+          "text": "Welcome! Can you start by explaining the difference between React Server Components and Client Components?"
+        }
+      ],
+      "cheatingScore": 3,
+      "warnings": [
+        "Tab Switched / Screen focus lost at 12:47:00"
+      ],
+      "createdAt": "2026-05-31T07:17:59.619Z"
+    },
+    {
+      "id": "mptg79iu",
+      "userName": "Shamutha User",
+      "role": "Frontend Engineer",
+      "score": 94,
+      "duration": 3,
+      "feedback": "Outstanding structural explanation. Demonstrated excellent depth regarding technical tradeoffs. ",
+      "transcript": [
+        {
+          "speaker": "AI",
+          "text": "Welcome! Can you start by explaining the difference between React Server Components and Client Components?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "React Server Components render only on the server, saving bundle size, whereas Client Components are standard interactive components."
+        },
+        {
+          "speaker": "AI",
+          "text": "Excellent. How does the browser layout engine handle the Critical Rendering Path, and what are ways to optimize it?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "React Server Components render only on the server, saving bundle size, whereas Client Components are standard interactive components."
+        },
+        {
+          "speaker": "AI",
+          "text": "Great answer. Finally, explain the benefit of using React Context API versus state management solutions like Redux Toolkit."
+        }
+      ],
+      "cheatingScore": 0,
+      "warnings": [],
+      "createdAt": "2026-05-31T07:18:20.406Z"
+    },
+    {
+      "id": "mptkhtfy",
+      "userName": "Shamutha User",
+      "role": "Frontend Engineer",
+      "transcript": [
+        {
+          "speaker": "AI",
+          "text": "Welcome! Can you explain the difference between React Server Components and Client Components?"
+        }
+      ],
+      "warnings": [
+        "Tab switched at 14:44:54",
+        "Tab switched at 14:45:03",
+        "Tab switched at 14:46:02"
+      ],
+      "createdAt": "2026-05-31T09:18:31.246Z"
+    }
+  ],
+  "enrollments": [],
+  "jobApplications": [
+    {
+      "id": "mpv8szek",
+      "jobId": "j7",
+      "applicantName": "Shamutha User",
+      "email": "candidate@shamutha.edu",
+      "appliedAt": "2026-06-01T13:26:49.148Z",
+      "status": "Applied"
+    }
+  ]
+}

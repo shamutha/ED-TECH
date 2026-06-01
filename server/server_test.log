@@ -1,0 +1,8 @@
+Connecting to Redis...
+Connecting to MongoDB at mongodb+srv://shamuthabadhusha:Shazia28@cluster0.sti2uio.mongodb.net/shamuthaEdTech (attempt 1)...
+✅ MongoDB connected successfully.
+Unhandled Exception: Error: listen EADDRINUSE: address already in use 0.0.0.0:5001
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at node:net:2206:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
