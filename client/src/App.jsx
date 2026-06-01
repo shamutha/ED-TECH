@@ -1441,26 +1441,28 @@ const submitBattleCode = async () => {
               ))}
             </div>
           {import.meta.env.DEV && (
-            <div className="glass-panel" style={{ padding: '20px', marginTop: '20px', border: '1px dashed rgba(255,255,255,0.16)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '16px' }}>Flash Proxy Debug</h3>
-                  <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>Calls the backend proxy at <code>/api/proxy/flash</code>.</p>
+            <div style={{ display: 'grid', gap: '20px', width: '100%', marginTop: '20px' }}>
+              <div className="glass-panel" style={{ padding: '20px', border: '1px dashed rgba(255,255,255,0.16)', position: 'relative', zIndex: 1, width: '100%' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '12px' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '16px' }}>Flash Proxy Debug</h3>
+                    <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>Calls the backend proxy at <code>/api/proxy/flash</code>.</p>
+                  </div>
+                  <button onClick={runFlashProxyTest} disabled={flashProxyLoading} style={{ padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.12)', background: flashProxyLoading ? 'rgba(255,255,255,0.05)' : 'rgba(0,210,255,0.12)', color: 'white', cursor: flashProxyLoading ? 'not-allowed' : 'pointer' }}>
+                    {flashProxyLoading ? 'Running…' : 'Run Proxy'}
+                  </button>
                 </div>
-                <button onClick={runFlashProxyTest} disabled={flashProxyLoading} style={{ padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.12)', background: flashProxyLoading ? 'rgba(255,255,255,0.05)' : 'rgba(0,210,255,0.12)', color: 'white', cursor: flashProxyLoading ? 'not-allowed' : 'pointer' }}>
-                  {flashProxyLoading ? 'Running…' : 'Run Proxy'}
-                </button>
+                {flashProxyError && (
+                  <div style={{ padding: '12px', borderRadius: '10px', background: 'rgba(255,0,84,0.08)', border: '1px solid rgba(255,0,84,0.18)', color: 'var(--danger)', fontSize: '13px' }}>
+                    <strong>Error:</strong> {flashProxyError}
+                  </div>
+                )}
+                {flashProxyResult && (
+                  <pre style={{ marginTop: '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', fontSize: '12px', lineHeight: '1.4', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    {JSON.stringify(flashProxyResult, null, 2)}
+                  </pre>
+                )}
               </div>
-              {flashProxyError && (
-                <div style={{ padding: '12px', borderRadius: '10px', background: 'rgba(255,0,84,0.08)', border: '1px solid rgba(255,0,84,0.18)', color: 'var(--danger)', fontSize: '13px' }}>
-                  <strong>Error:</strong> {flashProxyError}
-                </div>
-              )}
-              {flashProxyResult && (
-                <pre style={{ marginTop: '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '12px', lineHeight: '1.4', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  {JSON.stringify(flashProxyResult, null, 2)}
-                </pre>
-              )}
             </div>
           )}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
@@ -2327,238 +2329,128 @@ const submitBattleCode = async () => {
 
         {/* ── MARKETPLACE ── */}
         {activeTab === 'marketplace' && (
-  <>
-    <div style={{ marginBottom: '16px' }}>
-      <input type="text" className="chat-input" placeholder="🔍 Search courses..." style={{ width: '320px' }}
-        onChange={e => { const q = e.target.value.toLowerCase(); setCourses(q ? INITIAL_COURSES.filter(c => c.title.toLowerCase().includes(q) || c.category.toLowerCase().includes(q) || c.instructor.toLowerCase().includes(q)) : INITIAL_COURSES); }} />
-    </div>
-
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-      {courses.map(c => (
-        <div key={c.id} className="glass-panel" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: '12px' }}>
-          {/* Thumbnail */}
-          <div style={{ position: 'relative', height: '150px', overflow: 'hidden', background: '#1a1030' }}>
-            <img src={c.image} alt={c.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={e => { e.target.style.display='none'; }} />
-            <span style={{ position: 'absolute', top: '8px', left: '8px', fontSize: '10px', background: 'rgba(0,0,0,0.75)', color: 'white', padding: '3px 8px', borderRadius: '4px', fontWeight: 600 }}>{c.category}</span>
-            {c.enrolled && <span style={{ position: 'absolute', top: '8px', right: '8px', fontSize: '10px', background: 'var(--success)', color: 'white', padding: '3px 8px', borderRadius: '4px' }}>Enrolled</span>}
-          </div>
-
-          {/* Info */}
-          <div style={{ padding: '14px', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <h3 style={{ fontSize: '13px', lineHeight: 1.4, fontWeight: 700 }}>{c.title}</h3>
-            <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{c.instructor}</p>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--warning)' }}>{c.rating}</span>
-              <div style={{ display: 'flex', gap: '1px' }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={10} fill={i < Math.floor(c.rating) ? 'var(--warning)' : 'none'} stroke="var(--warning)" />
-                ))}
-              </div>
-              <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>({(c.students / 1000).toFixed(0)}k)</span>
-            </div>
-
-            <p style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>⏱ {c.hours} hrs • 📚 {c.lectures} lectures • All Levels</p>
-
-            {c.enrolled && c.progress > 0 && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-secondary)', marginBottom: '3px' }}>
-                  <span>Progress</span><span>{c.progress}%</span>
-                </div>
-                <div style={{ height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px' }}>
-                  <div style={{ width: `${c.progress}%`, height: '100%', background: 'var(--accent-blue)', borderRadius: '2px' }} />
-                </div>
-              </div>
-            )}
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '8px' }}>
-              <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--success)' }}>{c.price}</span>
-              {c.enrolled
-                ? <button className="btn-secondary" style={{ fontSize: '11px', pointerEvents: 'none', color: 'var(--success)' }}>✓ Continue</button>
-                : <button className="btn-premium" style={{ fontSize: '11px', padding: '6px 14px' }} onClick={() => { setCheckoutCourse(c); setShowPaymentModal(true); setPaymentSuccess(false); setCardNumber(''); }}>Enroll Now</button>
-              }
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-
-    {/* Payment modal — keep your existing one unchanged */}
-    {showPaymentModal && (
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-        <div className="glass-panel" style={{ width: '420px', padding: '30px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3>🔐 Secure Checkout</h3>
-            <X style={{ cursor: 'pointer' }} onClick={() => { setShowPaymentModal(false); setPaymentSuccess(false); setCardNumber(''); }} />
-          </div>
-          <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <img src={checkoutCourse?.image} alt="" style={{ width: '64px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={e => e.target.style.display='none'} />
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: '12px', fontWeight: 600 }}>{checkoutCourse?.title}</p>
-              <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{checkoutCourse?.instructor}</p>
-            </div>
-            <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--success)' }}>{checkoutCourse?.price}</span>
-          </div>
-          {paymentSuccess ? (
-            <div style={{ textAlign: 'center', padding: '24px 0' }}>
-              <div style={{ fontSize: '48px', marginBottom: '12px' }}>✅</div>
-              <h3 style={{ color: 'var(--success)', fontSize: '20px' }}>Payment Successful!</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px' }}>Unlocking course access...</p>
-            </div>
-          ) : (
-            <>
-              <div>
-                <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>CARD NUMBER</label>
-                <input type="text" maxLength={19} className="chat-input" style={{ width: '100%' }} placeholder="4242 4242 4242 4242"
-                  value={cardNumber} onChange={e => { const v = e.target.value.replace(/\D/g,'').slice(0,16); setCardNumber(v.replace(/(.{4})/g,'$1 ').trim()); }} />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div><label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>EXPIRY</label><input type="text" className="chat-input" placeholder="MM/YY" maxLength={5} /></div>
-                <div><label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>CVV</label><input type="password" className="chat-input" placeholder="•••" maxLength={3} /></div>
-              </div>
-              <button className="btn-premium" style={{ width: '100%', padding: '14px' }}
-                onClick={() => { if (!cardNumber || cardNumber.replace(/\s/g,'').length < 16) { addNotif('⚠️ Enter a valid card number!'); return; } processPayment(); }}>
-                Pay {checkoutCourse?.price} Securely →
-              </button>
-              <p style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-secondary)' }}>Test mode — no real money charged</p>
-            </>
-          )}
-        </div>
-      </div>
-    )}
-  </>
-)}
           <>
-            <div className="dashboard-grid">
+            <div style={{ marginBottom: '16px' }}>
+              <input
+                type="text"
+                className="chat-input"
+                placeholder="🔍 Search courses..."
+                style={{ width: '320px' }}
+                onChange={e => {
+                  const q = e.target.value.toLowerCase();
+                  setCourses(q ? INITIAL_COURSES.filter(c => c.title.toLowerCase().includes(q) || c.category.toLowerCase().includes(q) || c.instructor.toLowerCase().includes(q)) : INITIAL_COURSES);
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
               {courses.map(c => (
-                <div key={c.id} className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ fontSize: '32px', marginBottom: '10px' }}>{c.image}</div>
-                  <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--accent-blue)', fontWeight: 'bold' }}>{c.category}</span>
-                  <h3 style={{ fontSize: '15px', margin: '6px 0', flexGrow: 1 }}>{c.title}</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
-                    <Star size={12} style={{ color: 'var(--warning)' }} fill="var(--warning)" />
-                    <span style={{ fontSize: '12px', color: 'var(--warning)' }}>{c.rating}</span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>({(c.students / 1000).toFixed(1)}k students)</span>
+                <div key={c.id} className="glass-panel" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: '12px' }}>
+                  <div style={{ position: 'relative', height: '150px', overflow: 'hidden', background: '#1a1030' }}>
+                    <img
+                      src={c.image}
+                      alt={c.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={e => { e.target.style.display = 'none'; }}
+                    />
+                    <span style={{ position: 'absolute', top: '8px', left: '8px', fontSize: '10px', background: 'rgba(0,0,0,0.75)', color: 'white', padding: '3px 8px', borderRadius: '4px', fontWeight: 600 }}>{c.category}</span>
+                    {c.enrolled && <span style={{ position: 'absolute', top: '8px', right: '8px', fontSize: '10px', background: 'var(--success)', color: 'white', padding: '3px 8px', borderRadius: '4px' }}>Enrolled</span>}
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', color: 'var(--success)' }}>{c.price}</span>
-                    {c.enrolled ? <button className="btn-secondary" style={{ pointerEvents: 'none', color: 'var(--text-secondary)', fontSize: '12px' }}>✓ Enrolled</button> : <button className="btn-premium" style={{ fontSize: '12px' }} onClick={() => { setCheckoutCourse(c); setShowPaymentModal(true); setPaymentSuccess(false); setCardNumber(''); }}>Enroll Now</button>}
+                  <div style={{ padding: '14px', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <h3 style={{ fontSize: '13px', lineHeight: 1.4, fontWeight: 700 }}>{c.title}</h3>
+                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{c.instructor}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--warning)' }}>{c.rating}</span>
+                      <div style={{ display: 'flex', gap: '1px' }}>
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} size={10} fill={i < Math.floor(c.rating) ? 'var(--warning)' : 'none'} stroke="var(--warning)" />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>({(c.students / 1000).toFixed(0)}k)</span>
+                    </div>
+                    <p style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>⏱ {c.hours} hrs • 📚 {c.lectures} lectures • All Levels</p>
+                    {c.enrolled && c.progress > 0 && (
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-secondary)', marginBottom: '3px' }}>
+                          <span>Progress</span><span>{c.progress}%</span>
+                        </div>
+                        <div style={{ height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px' }}>
+                          <div style={{ width: `${c.progress}%`, height: '100%', background: 'var(--accent-blue)', borderRadius: '2px' }} />
+                        </div>
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '8px' }}>
+                      <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--success)' }}>{c.price}</span>
+                      {c.enrolled ? (
+                        <button className="btn-secondary" style={{ fontSize: '11px', pointerEvents: 'none', color: 'var(--success)' }}>✓ Continue</button>
+                      ) : (
+                        <button className="btn-premium" style={{ fontSize: '11px', padding: '6px 14px' }} onClick={() => { setCheckoutCourse(c); setShowPaymentModal(true); setPaymentSuccess(false); setCardNumber(''); }}>Enroll Now</button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
+
             {showPaymentModal && (
-  <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-    <div className="glass-panel" style={{ width: '420px', padding: '30px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3>🔐 Secure Checkout</h3>
-        <X style={{ cursor: 'pointer' }} onClick={() => { setShowPaymentModal(false); setPaymentSuccess(false); setCardNumber(''); }} />
-      </div>
-
-      {/* Course summary */}
-      <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-        <span style={{ fontSize: '28px' }}>{checkoutCourse?.image}</span>
-        <div>
-          <p style={{ fontSize: '13px', fontWeight: 600 }}>{checkoutCourse?.title}</p>
-          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>{checkoutCourse?.category}</p>
-        </div>
-        <span style={{ marginLeft: 'auto', fontWeight: 800, fontSize: '18px', color: 'var(--success)' }}>{checkoutCourse?.price}</span>
-      </div>
-
-      {paymentSuccess ? (
-        <div style={{ textAlign: 'center', padding: '24px 0' }}>
-          <div style={{ fontSize: '48px', marginBottom: '12px' }}>✅</div>
-          <h3 style={{ color: 'var(--success)', fontSize: '20px' }}>Payment Successful!</h3>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px' }}>Unlocking course access...</p>
-          <div style={{ marginTop: '16px', background: 'rgba(57,245,212,0.08)', borderRadius: '8px', padding: '10px', border: '1px solid var(--success)' }}>
-            <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Transaction ID</p>
-            <p style={{ fontFamily: 'monospace', fontSize: '12px', color: 'var(--success)' }}>
-              rzp_test_{Math.random().toString(36).slice(2,12).toUpperCase()}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* Razorpay-style card form */}
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '4px' }}>
-            {['💳 Card', '🏦 UPI', '📱 Wallet'].map(m => (
-              <button key={m} style={{
-                flex: 1, padding: '8px', fontSize: '11px', borderRadius: '6px', cursor: 'pointer',
-                background: m === '💳 Card' ? 'rgba(0,210,255,0.12)' : 'rgba(255,255,255,0.04)',
-                border: m === '💳 Card' ? '1px solid var(--accent-blue)' : '1px solid rgba(255,255,255,0.08)',
-                color: 'white'
-              }}>{m}</button>
-            ))}
-          </div>
-
-          <div>
-            <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>
-              CARD NUMBER
-            </label>
-            <input
-              type="text" maxLength={19}
-              className="chat-input" style={{ width: '100%' }}
-              placeholder="4242 4242 4242 4242"
-              value={cardNumber}
-              onChange={e => {
-                const v = e.target.value.replace(/\D/g, '').slice(0, 16);
-                setCardNumber(v.replace(/(.{4})/g, '$1 ').trim());
-              }}
-            />
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-            <div>
-              <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>EXPIRY</label>
-              <input type="text" className="chat-input" placeholder="MM/YY" maxLength={5}
-                onChange={e => { const v = e.target.value.replace(/\D/g,''); e.target.value = v.length > 2 ? v.slice(0,2)+'/'+v.slice(2) : v; }} />
-            </div>
-            <div>
-              <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>CVV</label>
-              <input type="password" className="chat-input" placeholder="•••" maxLength={3} />
-            </div>
-            <div>
-              <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>ZIP</label>
-              <input type="text" className="chat-input" placeholder="600001" maxLength={6} />
-            </div>
-          </div>
-
-          {/* Validation hint */}
-          {cardNumber && cardNumber.replace(/\s/g,'') !== '4242424242424242' && (
-            <p style={{ fontSize: '11px', color: 'var(--warning)', marginTop: '-8px' }}>
-              ⚠️ Use test card: <strong>4242 4242 4242 4242</strong>
-            </p>
-          )}
-
-          {/* Security badges */}
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-            {['🔒 256-bit SSL', '✅ PCI DSS', '⚡ Razorpay'].map(b => (
-              <span key={b} style={{ fontSize: '10px', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.04)', padding: '3px 8px', borderRadius: '4px' }}>{b}</span>
-            ))}
-          </div>
-
-          <button
-            className="btn-premium" style={{ width: '100%', padding: '14px', fontSize: '15px' }}
-            onClick={() => {
-              if (!cardNumber || cardNumber.replace(/\s/g,'').length < 16) {
-                addNotif('⚠️ Enter a valid 16-digit card number!');
-                return;
-              }
-              processPayment();
-            }}
-          >
-            Pay {checkoutCourse?.price} Securely →
-          </button>
-          <p style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-secondary)' }}>
-            Test mode — no real money charged
-          </p>
-        </>
-      )}
-    </div>
-  </div>
-)}
+              <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                <div className="glass-panel" style={{ width: '420px', padding: '30px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3>🔐 Secure Checkout</h3>
+                    <X style={{ cursor: 'pointer' }} onClick={() => { setShowPaymentModal(false); setPaymentSuccess(false); setCardNumber(''); }} />
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <img src={checkoutCourse?.image} alt="" style={{ width: '64px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={e => e.target.style.display='none'} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: '12px', fontWeight: 600 }}>{checkoutCourse?.title}</p>
+                      <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{checkoutCourse?.instructor}</p>
+                    </div>
+                    <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--success)' }}>{checkoutCourse?.price}</span>
+                  </div>
+                  {paymentSuccess ? (
+                    <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                      <div style={{ fontSize: '48px', marginBottom: '12px' }}>✅</div>
+                      <h3 style={{ color: 'var(--success)', fontSize: '20px' }}>Payment Successful!</h3>
+                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px' }}>Unlocking course access...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>CARD NUMBER</label>
+                        <input
+                          type="text"
+                          maxLength={19}
+                          className="chat-input"
+                          style={{ width: '100%' }}
+                          placeholder="4242 4242 4242 4242"
+                          value={cardNumber}
+                          onChange={e => { const v = e.target.value.replace(/\D/g,'').slice(0,16); setCardNumber(v.replace(/(.{4})/g,'$1 ').trim()); }}
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                        <div>
+                          <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>EXPIRY</label>
+                          <input type="text" className="chat-input" placeholder="MM/YY" maxLength={5} />
+                        </div>
+                        <div>
+                          <label style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>CVV</label>
+                          <input type="password" className="chat-input" placeholder="•••" maxLength={3} />
+                        </div>
+                      </div>
+                      <button className="btn-premium" style={{ width: '100%', padding: '14px' }}
+                        onClick={() => { if (!cardNumber || cardNumber.replace(/\s/g,'').length < 16) { addNotif('⚠️ Enter a valid card number!'); return; } processPayment(); }}
+                      >
+                        Pay {checkoutCourse?.price} Securely →
+                      </button>
+                      <p style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-secondary)' }}>Test mode — no real money charged</p>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </>
+        )}
+
         
 
         {/* ── PLACEMENTS ── */}
@@ -2663,7 +2555,7 @@ const submitBattleCode = async () => {
         )}
 
         {/* ── CERTIFICATE ── */}
-        
+        {activeTab === 'certificate' && (
           <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' }}>
             {/* Configuration Inputs */}
             <div style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -2729,49 +2621,6 @@ const submitBattleCode = async () => {
 
         
   
-    <div style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <h3>Configure Certificate</h3>
-      <div><label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>STUDENT NAME</label><input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={certName} onChange={e => setCertName(e.target.value)} /></div>
-      <div><label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>COURSE</label>
-        <select className="ide-select" value={certCourse} onChange={e => setCertCourse(e.target.value)} style={{ width: '100%', marginTop: '4px' }}>
-          <option>Full-Stack MERN Mastery</option><option>AI Engineering & TensorFlow.js</option><option>Data Structures & Algorithms</option>
-        </select>
-      </div>
-    </div>
-
-      <h1 style={{ color: 'var(--warning)', fontSize: '28px', fontStyle: 'italic', marginBottom: '10px' }}>Certificate of Achievement</h1>
-          <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' }}>
-            <div style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <h3>Configure Certificate</h3>
-              <div><label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>STUDENT NAME</label><input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={certName} onChange={e => setCertName(e.target.value)} /></div>
-              <div><label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>COURSE</label>
-                <select className="ide-select" value={certCourse} onChange={e => setCertCourse(e.target.value)} style={{ width: '100%', marginTop: '4px' }}>
-                  <option>Full-Stack MERN Mastery</option><option>AI Engineering & TensorFlow.js</option><option>Data Structures & Algorithms</option>
-                </select>
-              </div>
-            </div>
-            <div className="certificate-frame" style={{ width: '100%', maxWidth: '650px', padding: '40px', background: 'white', color: '#111', textAlign: 'center', borderRadius: '8px' }}>
-              <h1 style={{ color: '#d97706', fontSize: '28px', fontStyle: 'italic', marginBottom: '10px' }}>Certificate of Achievement</h1>
-              <p style={{ color: '#666', fontSize: '14px', marginBottom: '20px' }}>This is proudly presented to</p>
-              <h2 style={{ fontSize: '32px', borderBottom: '1px solid #ccc', paddingBottom: '10px', margin: '0 auto 20px', display: 'inline-block' }}>{certName}</h2>
-              <p style={{ color: '#666', fontSize: '14px', lineHeight: 1.6, maxWidth: '500px', margin: '0 auto 20px' }}>For successfully completing all coding challenges, proctored assessments, and project requirements for</p>
-              <h3 style={{ color: '#00d2ff', fontSize: '22px', marginBottom: '30px' }}>{certCourse}</h3>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #eee', paddingTop: '20px' }}>
-                <div><span style={{ fontSize: '11px', color: '#888' }}>ISSUED</span><p style={{ fontWeight: 'bold', fontSize: '13px' }}>{new Date().toLocaleDateString()}</p></div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ width: '50px', height: '50px', background: '#eee', margin: '0 auto 4px', padding: '4px', borderRadius: '4px' }}>
-                    <div style={{ width: '100%', height: '100%', background: '#111', display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '1px' }}>
-                      {Array.from({ length: 25 }).map((_, i) => <div key={i} style={{ background: (i * 7 + 12) % 3 === 0 ? 'white' : 'transparent' }} />)}
-                    </div>
-                  </div>
-                  <span style={{ fontSize: '9px', color: 'var(--text-secondary)' }}>Scan to Verify</span>
-                </div>
-                <div style={{ textAlign: 'right' }}><span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>HASH</span><p style={{ fontSize: '12px', fontWeight: 'bold', fontFamily: 'monospace', color: 'var(--warning)' }}>VERIFIED-SH-A89B0CD2</p></div>
-              </div>
-            </div>
-            <button className="btn-premium" onClick={() => window.print()}><Download size={16} /> Export Certificate</button>
-          </div>
-        
       </main>
     </div>
   );
