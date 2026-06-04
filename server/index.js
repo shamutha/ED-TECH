@@ -1,16 +1,14 @@
+import 'dotenv/config';  // ← MUST be first: loads .env before any other module reads process.env
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import dotenv from 'dotenv';
 import Redis from 'ioredis';
 import router from './routes.js';
 import { connectDB } from './db.js';
 
-dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5001;
 
 // CORS settings to allow frontend dashboard connection
 app.use(cors({
@@ -23,6 +21,12 @@ app.use(express.json());
 
 // Main Router attachment
 app.use('/api', router);
+
+// Support legacy /proxy/flash path without /api prefix by redirecting to the proper route
+app.use('/proxy/flash', (req, res) => {
+  // Preserve method and body with 307 Temporary Redirect
+  res.redirect(307, '/api/proxy/flash');
+});
 
 // Root route
 app.get('/', (req, res) => {

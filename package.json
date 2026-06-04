@@ -10,7 +10,10 @@
     "dev": "npx concurrently \"npm run dev:server\" \"npm run dev:client\""
   },
   "dependencies": {
-    "mangodb": "^1.0.0"
+    "lucide-react": "^1.17.0",
+    "mangodb": "^1.0.0",
+    "razorpay": "^2.9.6",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

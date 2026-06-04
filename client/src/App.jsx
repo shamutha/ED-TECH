@@ -4,7 +4,8 @@ import {
   LayoutDashboard, Code2, Mic, Video, Swords, FileText,
   ShoppingBag, Briefcase, BarChart3, Award, Sparkles, Bell,
   CheckCircle, AlertTriangle, X, Send, Trash2, Download, Trophy,
-  Maximize2, Minimize2, MicOff, Volume2, Clock, Star, BookOpen, HelpCircle
+  Maximize2, Minimize2, MicOff, Volume2, Clock, Star, BookOpen, HelpCircle,
+  Lock, Eye, Users, Zap, TrendingUp, Shield, Radio, Share2, Pause, Play
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import * as tf from '@tensorflow/tfjs';
@@ -48,21 +49,21 @@ const INITIAL_PROBLEMS = {
 };
 
 const INITIAL_COURSES = [
-  { id: 'c1',  title: 'The Complete 2024 Web Development Bootcamp', instructor: 'Dr. Angela Yu', category: 'Development', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/1565838_e54e_16.jpg', progress: 45, enrolled: true,  rating: 4.7, students: 470093, hours: 62,  lectures: 374 },
-  { id: 'c2',  title: 'React - The Complete Guide (incl Hooks, React Router, Redux)', instructor: 'Maximilian Schwarzmüller', category: 'Frontend', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1362070_b9a1_2.jpg', progress: 0,  enrolled: false, rating: 4.6, students: 218000, hours: 68,  lectures: 692 },
-  { id: 'c3',  title: 'Node.js, Express, MongoDB & More: The Complete Bootcamp', instructor: 'Jonas Schmedtmann', category: 'Backend', price: '₹399', image: 'https://img-c.udemycdn.com/course/240x135/1672410_f3a3_4.jpg', progress: 0,  enrolled: false, rating: 4.8, students: 93000,  hours: 42,  lectures: 228 },
-  { id: 'c4',  title: 'JavaScript: The Complete Guide 2024 (Beginner + Advanced)', instructor: 'Maximilian Schwarzmüller', category: 'Development', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/2508942_11d3.jpg', progress: 10, enrolled: true,  rating: 4.6, students: 148000, hours: 52,  lectures: 614 },
-  { id: 'c5',  title: 'Python Bootcamp: From Zero to Hero in Python', instructor: 'Jose Portilla', category: 'Python', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/903744_8eb2.jpg', progress: 0,  enrolled: false, rating: 4.6, students: 540000, hours: 24,  lectures: 155 },
-  { id: 'c6',  title: 'Machine Learning A-Z: AI, Python & R + ChatGPT Prize', instructor: 'Kirill Eremenko', category: 'AI / ML', price: '₹549', image: 'https://img-c.udemycdn.com/course/240x135/950390_270f_3.jpg', progress: 0,  enrolled: false, rating: 4.5, students: 311000, hours: 44,  lectures: 375 },
-  { id: 'c7',  title: 'Docker & Kubernetes: The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevOps', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/2035922_6c6b.jpg', progress: 0,  enrolled: false, rating: 4.7, students: 97000,  hours: 23,  lectures: 262 },
-  { id: 'c8',  title: 'The Data Science Course: Complete Data Science Bootcamp', instructor: 'Soledad Galli', category: 'Data Science', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/1754098_e0df_3.jpg', progress: 0,  enrolled: false, rating: 4.5, students: 130000, hours: 29,  lectures: 450 },
-  { id: 'c9',  title: 'AWS Certified Solutions Architect - Associate 2024', instructor: 'Stephane Maarek', category: 'Cloud', price: '₹549', image: 'https://img-c.udemycdn.com/course/240x135/362328_91f3_10.jpg', progress: 0,  enrolled: false, rating: 4.7, students: 214000, hours: 27,  lectures: 388 },
-  { id: 'c10', title: 'System Design Interview - An Insider\'s Guide', instructor: 'Alex Xu', category: 'Architecture', price: '₹599', image: 'https://img-c.udemycdn.com/course/240x135/3391238_a026_5.jpg', progress: 0,  enrolled: false, rating: 4.6, students: 56000,  hours: 18,  lectures: 123 },
-  { id: 'c11', title: 'Master the Coding Interview: Data Structures + Algorithms', instructor: 'Andrei Neagoie', category: 'DSA', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1917546_3185_4.jpg', progress: 0,  enrolled: false, rating: 4.6, students: 78000,  hours: 19,  lectures: 261 },
-  { id: 'c12', title: 'TypeScript: The Complete Developer\'s Guide', instructor: 'Stephen Grider', category: 'TypeScript', price: '₹399', image: 'https://img-c.udemycdn.com/course/240x135/2264098_d9f6.jpg', progress: 0,  enrolled: false, rating: 4.6, students: 63000,  hours: 27,  lectures: 263 },
-  { id: 'c13', title: 'Flutter & Dart — The Complete App Development Course', instructor: 'Dr. Angela Yu', category: 'Mobile', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1708340_7108_3.jpg', progress: 0,  enrolled: false, rating: 4.7, students: 85000,  hours: 33,  lectures: 199 },
-  { id: 'c14', title: 'SQL & PostgreSQL for Beginners: Become an SQL Expert', instructor: 'Jon Avis', category: 'Database', price: '₹349', image: 'https://img-c.udemycdn.com/course/240x135/1965540_f5aa_2.jpg', progress: 0,  enrolled: false, rating: 4.5, students: 49000,  hours: 11,  lectures: 109 },
-  { id: 'c15', title: 'Git & GitHub — The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevTools', price: '₹299', image: 'https://img-c.udemycdn.com/course/240x135/3311840_b0a8.jpg', progress: 0,  enrolled: false, rating: 4.8, students: 39000,  hours: 6,   lectures: 80  },
+  { id: 'c1', title: 'The Complete 2024 Web Development Bootcamp', instructor: 'Dr. Angela Yu', category: 'Development', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/1565838_e54e_16.jpg', progress: 45, enrolled: true, rating: 4.7, students: 470093, hours: 62, lectures: 374 },
+  { id: 'c2', title: 'React - The Complete Guide (incl Hooks, React Router, Redux)', instructor: 'Maximilian Schwarzmüller', category: 'Frontend', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1362070_b9a1_2.jpg', progress: 0, enrolled: false, rating: 4.6, students: 218000, hours: 68, lectures: 692 },
+  { id: 'c3', title: 'Node.js, Express, MongoDB & More: The Complete Bootcamp', instructor: 'Jonas Schmedtmann', category: 'Backend', price: '₹399', image: 'https://img-c.udemycdn.com/course/240x135/1672410_f3a3_4.jpg', progress: 0, enrolled: false, rating: 4.8, students: 93000, hours: 42, lectures: 228 },
+  { id: 'c4', title: 'JavaScript: The Complete Guide 2024 (Beginner + Advanced)', instructor: 'Maximilian Schwarzmüller', category: 'Development', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/2508942_11d3.jpg', progress: 10, enrolled: true, rating: 4.6, students: 148000, hours: 52, lectures: 614 },
+  { id: 'c5', title: 'Python Bootcamp: From Zero to Hero in Python', instructor: 'Jose Portilla', category: 'Python', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/903744_8eb2.jpg', progress: 0, enrolled: false, rating: 4.6, students: 540000, hours: 24, lectures: 155 },
+  { id: 'c6', title: 'Machine Learning A-Z: AI, Python & R + ChatGPT Prize', instructor: 'Kirill Eremenko', category: 'AI / ML', price: '₹549', image: 'https://img-c.udemycdn.com/course/240x135/950390_270f_3.jpg', progress: 0, enrolled: false, rating: 4.5, students: 311000, hours: 44, lectures: 375 },
+  { id: 'c7', title: 'Docker & Kubernetes: The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevOps', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/2035922_6c6b.jpg', progress: 0, enrolled: false, rating: 4.7, students: 97000, hours: 23, lectures: 262 },
+  { id: 'c8', title: 'The Data Science Course: Complete Data Science Bootcamp', instructor: 'Soledad Galli', category: 'Data Science', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/1754098_e0df_3.jpg', progress: 0, enrolled: false, rating: 4.5, students: 130000, hours: 29, lectures: 450 },
+  { id: 'c9', title: 'AWS Certified Solutions Architect - Associate 2024', instructor: 'Stephane Maarek', category: 'Cloud', price: '₹549', image: 'https://img-c.udemycdn.com/course/240x135/362328_91f3_10.jpg', progress: 0, enrolled: false, rating: 4.7, students: 214000, hours: 27, lectures: 388 },
+  { id: 'c10', title: 'System Design Interview - An Insider\'s Guide', instructor: 'Alex Xu', category: 'Architecture', price: '₹599', image: 'https://img-c.udemycdn.com/course/240x135/3391238_a026_5.jpg', progress: 0, enrolled: false, rating: 4.6, students: 56000, hours: 18, lectures: 123 },
+  { id: 'c11', title: 'Master the Coding Interview: Data Structures + Algorithms', instructor: 'Andrei Neagoie', category: 'DSA', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1917546_3185_4.jpg', progress: 0, enrolled: false, rating: 4.6, students: 78000, hours: 19, lectures: 261 },
+  { id: 'c12', title: 'TypeScript: The Complete Developer\'s Guide', instructor: 'Stephen Grider', category: 'TypeScript', price: '₹399', image: 'https://img-c.udemycdn.com/course/240x135/2264098_d9f6.jpg', progress: 0, enrolled: false, rating: 4.6, students: 63000, hours: 27, lectures: 263 },
+  { id: 'c13', title: 'Flutter & Dart — The Complete App Development Course', instructor: 'Dr. Angela Yu', category: 'Mobile', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1708340_7108_3.jpg', progress: 0, enrolled: false, rating: 4.7, students: 85000, hours: 33, lectures: 199 },
+  { id: 'c14', title: 'SQL & PostgreSQL for Beginners: Become an SQL Expert', instructor: 'Jon Avis', category: 'Database', price: '₹349', image: 'https://img-c.udemycdn.com/course/240x135/1965540_f5aa_2.jpg', progress: 0, enrolled: false, rating: 4.5, students: 49000, hours: 11, lectures: 109 },
+  { id: 'c15', title: 'Git & GitHub — The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevTools', price: '₹299', image: 'https://img-c.udemycdn.com/course/240x135/3311840_b0a8.jpg', progress: 0, enrolled: false, rating: 4.8, students: 39000, hours: 6, lectures: 80 },
 ];
 
 const INITIAL_JOBS = [
@@ -100,8 +101,8 @@ function scoreAnswer(answer, questionObj) {
   const score = Math.round(keywordScore * 0.6 + fluencyScore * 0.4);
   let feedback = '';
   if (score >= 75) feedback = `Excellent! Covered key concepts: ${matched.join(', ')}.`;
-  else if (score >= 50) feedback = `Good attempt. Try to also mention: ${questionObj.keywords.filter(k => !matched.includes(k)).slice(0,3).join(', ')}.`;
-  else feedback = `Needs improvement. Key concepts to cover: ${questionObj.keywords.slice(0,4).join(', ')}.`;
+  else if (score >= 50) feedback = `Good attempt. Try to also mention: ${questionObj.keywords.filter(k => !matched.includes(k)).slice(0, 3).join(', ')}.`;
+  else feedback = `Needs improvement. Key concepts to cover: ${questionObj.keywords.slice(0, 4).join(', ')}.`;
   return { score, matched, feedback };
 }
 
@@ -289,7 +290,7 @@ export default function App() {
     setSubmittingTest(true);
     const answersToSend = overrideAnswers || userAnswers;
     const timeUsed = testQuestionsCount * 120 - testTimer;
-    
+
     try {
       const res = await fetch(`${API_BASE}/mocktest/submit`, {
         method: 'POST',
@@ -361,7 +362,7 @@ export default function App() {
       path: '/socket.io',
       transports: ['websocket', 'polling'],
       autoConnect: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10,
       timeout: 10000
     });
 
@@ -378,7 +379,7 @@ export default function App() {
     s.on('connect_timeout', () => console.warn('Socket connect_timeout'));
     s.on('reconnect_failed', () => console.warn('Socket reconnect_failed'));
 
-    fetch(`${API_BASE}/analytics`).then(r => r.json()).then(d => { if (d.success) setUserProfile(p => ({ ...p, ...d.analytics })); }).catch(() => {});
+    fetch(`${API_BASE}/analytics`).then(r => r.json()).then(d => { if (d.success) setUserProfile(p => ({ ...p, ...d.analytics })); }).catch(() => { });
 
     return () => {
       if (socketRef.current) {
@@ -517,7 +518,7 @@ export default function App() {
   const startListening = useCallback(() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { setIsListening(false); return; }
-    if (speechRecognitionRef.current) { try { speechRecognitionRef.current.abort(); } catch {} }
+    if (speechRecognitionRef.current) { try { speechRecognitionRef.current.abort(); } catch { } }
     const rec = new SR();
     rec.continuous = true;
     rec.interimResults = true;
@@ -530,7 +531,7 @@ export default function App() {
     rec.onerror = () => setIsListening(false);
     rec.onend = () => setIsListening(false);
     speechRecognitionRef.current = rec;
-    try { rec.start(); } catch {}
+    try { rec.start(); } catch { }
   }, []);
 
   const startInterview = async () => {
@@ -557,7 +558,7 @@ export default function App() {
   };
 
   const submitAnswer = () => {
-    if (speechRecognitionRef.current) { try { speechRecognitionRef.current.stop(); } catch {} }
+    if (speechRecognitionRef.current) { try { speechRecognitionRef.current.stop(); } catch { } }
     setIsListening(false);
 
     const answer = speechTranscript || '';
@@ -595,7 +596,7 @@ export default function App() {
     setInterviewFullscreen(false);
     setIsListening(false);
     window.speechSynthesis.cancel();
-    if (speechRecognitionRef.current) { try { speechRecognitionRef.current.abort(); } catch {} }
+    if (speechRecognitionRef.current) { try { speechRecognitionRef.current.abort(); } catch { } }
     if (videoRef.current?.srcObject) {
       videoRef.current.srcObject.getTracks().forEach(t => t.stop());
       videoRef.current.srcObject = null;
@@ -608,9 +609,9 @@ export default function App() {
     const allStrengths = sc.flatMap(s => s.matched).filter((v, i, a) => a.indexOf(v) === i).slice(0, 4);
     const allImprovements = sc.flatMap(s => INTERVIEW_QUESTIONS[interviewRole].find(q => q.q === s.question)?.keywords.filter(k => !s.matched.includes(k)) || []).filter((v, i, a) => a.indexOf(v) === i).slice(0, 4);
 
-    let feedback = avgScore >= 75 ? `Outstanding performance! Strong command of ${interviewRole} concepts. ${allStrengths.slice(0,2).join(', ')} knowledge was exceptional.`
-      : avgScore >= 50 ? `Good foundational knowledge shown. Deepen your understanding of ${allImprovements.slice(0,2).join(', ')} to improve.`
-      : `Keep practicing. Focus on core ${interviewRole} concepts: ${allImprovements.slice(0,3).join(', ')}.`;
+    let feedback = avgScore >= 75 ? `Outstanding performance! Strong command of ${interviewRole} concepts. ${allStrengths.slice(0, 2).join(', ')} knowledge was exceptional.`
+      : avgScore >= 50 ? `Good foundational knowledge shown. Deepen your understanding of ${allImprovements.slice(0, 2).join(', ')} to improve.`
+        : `Keep practicing. Focus on core ${interviewRole} concepts: ${allImprovements.slice(0, 3).join(', ')}.`;
 
     const report = {
       role: interviewRole, score: avgScore, confidence, plagiarism,
@@ -629,7 +630,7 @@ export default function App() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userName: userProfile.name, role: interviewRole, score: avgScore, confidence, plagiarism, feedback, transcript: finalTranscript, warnings: proctorWarnings })
       });
-    } catch {}
+    } catch { }
   };
 
   // Proctor — window blur detection with violation limit & auto-terminate
@@ -799,91 +800,107 @@ export default function App() {
 
   // FIX: Battle now actually runs code before declaring victory
   // ── BROWSER SANDBOX TEST RUNNER ──
-const BROWSER_TEST_CASES = {
-  'two-sum': [
-    { args: [[2,7,11,15], 9], expected: '[0,1]' },
-    { args: [[3,2,4], 6],     expected: '[1,2]' },
-    { args: [[3,3], 6],       expected: '[0,1]' }
-  ],
-  'reverse-string': [
-    { args: ['hello'],   expected: '"olleh"' },
-    { args: ['world'],   expected: '"dlrow"' },
-    { args: ['a'],       expected: '"a"' }
-  ],
-  'fizz-buzz': [
-    { args: [5], expected: '["1","2","Fizz","4","Buzz"]' },
-    { args: [3], expected: '["1","2","Fizz"]' }
-  ],
-  'palindrome': [
-    { args: ['racecar'], expected: 'true' },
-    { args: ['hello'],   expected: 'false' }
-  ],
-  'max-subarray': [
-    { args: [[-2,1,-3,4,-1,2,1,-5,4]], expected: '6' },
-    { args: [[1]],                      expected: '1' }
-  ]
-};
+  const BROWSER_TEST_CASES = {
+    'two-sum': [
+      { args: [[2, 7, 11, 15], 9], expected: '[0,1]' },
+      { args: [[3, 2, 4], 6], expected: '[1,2]' },
+      { args: [[3, 3], 6], expected: '[0,1]' }
+    ],
+    'reverse-string': [
+      { args: ['hello'], expected: '"olleh"' },
+      { args: ['world'], expected: '"dlrow"' },
+      { args: ['a'], expected: '"a"' }
+    ],
+    'fizz-buzz': [
+      { args: [5], expected: '["1","2","Fizz","4","Buzz"]' },
+      { args: [3], expected: '["1","2","Fizz"]' }
+    ],
+    'palindrome': [
+      { args: ['racecar'], expected: 'true' },
+      { args: ['hello'], expected: 'false' }
+    ],
+    'max-subarray': [
+      { args: [[-2, 1, -3, 4, -1, 2, 1, -5, 4]], expected: '6' },
+      { args: [[1]], expected: '1' }
+    ]
+  };
 
-function runInSandbox(userCode, problemId) {
-  const cases = BROWSER_TEST_CASES[problemId] || [];
-  const results = [];
-  let fn;
-  try {
-    // eslint-disable-next-line no-new-func
-    fn = new Function(`${userCode}; return solution;`)();
-  } catch (e) {
-    return cases.map((tc, i) => ({
-      testCase: i + 1, passed: false,
-      input: JSON.stringify(tc.args),
-      expected: tc.expected,
-      actual: `Syntax Error: ${e.message}`
-    }));
-  }
-  for (let i = 0; i < cases.length; i++) {
-    const tc = cases[i];
-    let actual, actualStr;
+  function runInSandbox(userCode, problemId) {
+    const cases = BROWSER_TEST_CASES[problemId] || [];
+    const results = [];
+    let fn;
     try {
-      actual = fn(...tc.args);
-      actualStr = JSON.stringify(actual);
+      // eslint-disable-next-line no-new-func
+      fn = new Function(`${userCode}; return solution;`)();
     } catch (e) {
-      actualStr = `Runtime Error: ${e.message}`;
+      return cases.map((tc, i) => ({
+        testCase: i + 1, passed: false,
+        input: JSON.stringify(tc.args),
+        expected: tc.expected,
+        actual: `Syntax Error: ${e.message}`
+      }));
     }
-    results.push({
-      testCase: i + 1,
-      passed: actualStr === tc.expected,
-      input: JSON.stringify(tc.args),
-      expected: tc.expected,
-      actual: actualStr
-    });
-  }
-  return results;
-}
-
-const submitBattleCode = async () => {
-  setBattleSubmitted(true);
-  setBattleTestResults([{ testCase: 1, passed: false, input: 'running...', actual: '⚙️ Testing...', expected: '...' }]);
-
-  // 1️⃣ Try server first
-  let data = null;
-  try {
-    const res = await fetch(`${API_BASE}/compile`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: battleCode, language: 'javascript', problemId: 'two-sum' })
-    });
-    data = await res.json();
-  } catch {
-    // Server offline → fall to browser sandbox
-    data = null;
+    for (let i = 0; i < cases.length; i++) {
+      const tc = cases[i];
+      let actual, actualStr;
+      try {
+        actual = fn(...tc.args);
+        actualStr = JSON.stringify(actual);
+      } catch (e) {
+        actualStr = `Runtime Error: ${e.message}`;
+      }
+      results.push({
+        testCase: i + 1,
+        passed: actualStr === tc.expected,
+        input: JSON.stringify(tc.args),
+        expected: tc.expected,
+        actual: actualStr
+      });
+    }
+    return results;
   }
 
-  // 2️⃣ If server down or no response, run in browser sandbox
-  if (!data) {
-    const sandboxResults = runInSandbox(battleCode, battleProblem?.id || 'two-sum');
-    const allPassed = sandboxResults.every(r => r.passed);
-    setBattleTestResults(sandboxResults);
+  const submitBattleCode = async () => {
+    setBattleSubmitted(true);
+    setBattleTestResults([{ testCase: 1, passed: false, input: 'running...', actual: '⚙️ Testing...', expected: '...' }]);
 
-    if (allPassed) {
+    // 1️⃣ Try server first
+    let data = null;
+    try {
+      const res = await fetch(`${API_BASE}/compile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: battleCode, language: 'javascript', problemId: 'two-sum' })
+      });
+      data = await res.json();
+    } catch {
+      // Server offline → fall to browser sandbox
+      data = null;
+    }
+
+    // 2️⃣ If server down or no response, run in browser sandbox
+    if (!data) {
+      const sandboxResults = runInSandbox(battleCode, battleProblem?.id || 'two-sum');
+      const allPassed = sandboxResults.every(r => r.passed);
+      setBattleTestResults(sandboxResults);
+
+      if (allPassed) {
+        setBattleState('finished');
+        setBattleStatusMsg('🎉 Victory! All test cases passed. +200 XP!');
+        if (socket) socket.emit('battle-win', { roomId: battleRoom, winner: userProfile.name });
+        setUserProfile(p => ({ ...p, xp: p.xp + 200, totalBattles: p.totalBattles + 1, battlesWon: p.battlesWon + 1 }));
+        addNotif('⚔️ Battle Won! +200 XP added!');
+      } else {
+        setBattleSubmitted(false);
+        setBattleStatusMsg('');
+        addNotif(`❌ ${sandboxResults.filter(r => !r.passed).length} test(s) failed. Fix and resubmit!`);
+      }
+      return;
+    }
+
+    // 3️⃣ Server responded
+    setBattleTestResults(data.testResults || []);
+    if (data.success) {
       setBattleState('finished');
       setBattleStatusMsg('🎉 Victory! All test cases passed. +200 XP!');
       if (socket) socket.emit('battle-win', { roomId: battleRoom, winner: userProfile.name });
@@ -892,25 +909,9 @@ const submitBattleCode = async () => {
     } else {
       setBattleSubmitted(false);
       setBattleStatusMsg('');
-      addNotif(`❌ ${sandboxResults.filter(r => !r.passed).length} test(s) failed. Fix and resubmit!`);
+      addNotif('❌ Tests failed. Fix your code and try again!');
     }
-    return;
-  }
-
-  // 3️⃣ Server responded
-  setBattleTestResults(data.testResults || []);
-  if (data.success) {
-    setBattleState('finished');
-    setBattleStatusMsg('🎉 Victory! All test cases passed. +200 XP!');
-    if (socket) socket.emit('battle-win', { roomId: battleRoom, winner: userProfile.name });
-    setUserProfile(p => ({ ...p, xp: p.xp + 200, totalBattles: p.totalBattles + 1, battlesWon: p.battlesWon + 1 }));
-    addNotif('⚔️ Battle Won! +200 XP added!');
-  } else {
-    setBattleSubmitted(false);
-    setBattleStatusMsg('');
-    addNotif('❌ Tests failed. Fix your code and try again!');
-  }
-};
+  };
 
   // ── MODULE 5: RESUME ──
   const resumeData = useSelector((state) => state.resume.data);
@@ -941,7 +942,7 @@ const submitBattleCode = async () => {
   const processPayment = async () => {
     if (!cardNumber) return;
     setPaymentSuccess(true);
-    try { await fetch(`${API_BASE}/courses/enroll`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ courseId: checkoutCourse.id }) }); } catch {}
+    try { await fetch(`${API_BASE}/courses/enroll`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ courseId: checkoutCourse.id }) }); } catch { }
     setTimeout(() => { setShowPaymentModal(false); setCourses(courses.map(c => c.id === checkoutCourse.id ? { ...c, enrolled: true } : c)); addNotif(`📚 Enrolled in ${checkoutCourse.title}!`); }, 2000);
   };
 
@@ -959,7 +960,7 @@ const submitBattleCode = async () => {
   }, [resumeData.skills]);
 
   const applyForJob = async (job) => {
-    try { await fetch(`${API_BASE}/jobs/apply`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jobId: job.id, applicantName: userProfile.name, email: resumeData.email }) }); } catch {}
+    try { await fetch(`${API_BASE}/jobs/apply`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jobId: job.id, applicantName: userProfile.name, email: resumeData.email }) }); } catch { }
     dispatch(addAppliedJob(job.id));
     addNotif(`💼 Applied to ${job.company} — ${job.role}!`);
   };
@@ -988,10 +989,10 @@ const submitBattleCode = async () => {
     setTimeout(() => setResumeSaveMsg(''), 3500);
   };
   const exportResumePDF = () => {
-  const el = document.getElementById('resume-preview-panel');
-  if (!el) return;
-  const printWindow = window.open('', '_blank');
-  printWindow.document.write(`
+    const el = document.getElementById('resume-preview-panel');
+    if (!el) return;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
     <html><head><title>Resume - ${resumeData.fullName}</title>
     <style>
       body { font-family: Arial, sans-serif; padding: 40px; color: #222; }
@@ -1004,10 +1005,10 @@ const submitBattleCode = async () => {
     ${el.innerHTML}
     </body></html>
   `);
-  printWindow.document.close();
-  printWindow.focus();
-  setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
-};
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+  };
 
   // Load resume on startup: prefer server -> fall back to localStorage
   useEffect(() => {
@@ -1127,24 +1128,42 @@ const submitBattleCode = async () => {
   });
 
   const processPaymentIntegration = async () => {
-    if (paymentChannel === 'stripe') {
-      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_12345';
-      const stripe = await loadStripe(stripeKey);
-      if (stripe) {
-        addNotif('✅ Stripe integration ready (demo mode).');
-        return;
-      }
+  const loaded = await loadRazorpayScript();
+
+  if (!loaded) {
+    alert('Razorpay load failed');
+    return;
+  }
+
+  const res = await fetch(`${API_BASE}/payment/create-order`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      amount: 500
+    })
+  });
+
+  const data = await res.json();
+
+  const options = {
+    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+    amount: data.order.amount,
+    currency: data.order.currency,
+    order_id: data.order.id,
+    name: 'Shamutha AI EdTech',
+
+    handler: function (response) {
+      alert('Payment Successful');
+      console.log(response);
     }
-    if (paymentChannel === 'razorpay') {
-      const loaded = await loadRazorpayScript();
-      if (loaded && window.Razorpay) {
-        addNotif('✅ Razorpay integration ready (demo mode).');
-        return;
-      }
-    }
-    addNotif('⚠️ Payment provider not available; using simulated checkout.');
   };
 
+  const paymentObject = new window.Razorpay(options);
+  paymentObject.open();
+};
+  
   const startScreenMonitoring = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
@@ -1440,31 +1459,31 @@ const submitBattleCode = async () => {
                 </div>
               ))}
             </div>
-          {import.meta.env.DEV && (
-            <div style={{ display: 'grid', gap: '20px', width: '100%', marginTop: '20px' }}>
-              <div className="glass-panel" style={{ padding: '20px', border: '1px dashed rgba(255,255,255,0.16)', position: 'relative', zIndex: 1, width: '100%' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '12px' }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: '16px' }}>Flash Proxy Debug</h3>
-                    <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>Calls the backend proxy at <code>/api/proxy/flash</code>.</p>
+            {import.meta.env.DEV && (
+              <div style={{ display: 'grid', gap: '20px', width: '100%', marginTop: '20px' }}>
+                <div className="glass-panel" style={{ padding: '20px', border: '1px dashed rgba(255,255,255,0.16)', position: 'relative', zIndex: 1, width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '12px' }}>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: '16px' }}>Flash Proxy Debug</h3>
+                      <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>Calls the backend proxy at <code>/api/proxy/flash</code>.</p>
+                    </div>
+                    <button onClick={runFlashProxyTest} disabled={flashProxyLoading} style={{ padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.12)', background: flashProxyLoading ? 'rgba(255,255,255,0.05)' : 'rgba(0,210,255,0.12)', color: 'white', cursor: flashProxyLoading ? 'not-allowed' : 'pointer' }}>
+                      {flashProxyLoading ? 'Running…' : 'Run Proxy'}
+                    </button>
                   </div>
-                  <button onClick={runFlashProxyTest} disabled={flashProxyLoading} style={{ padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.12)', background: flashProxyLoading ? 'rgba(255,255,255,0.05)' : 'rgba(0,210,255,0.12)', color: 'white', cursor: flashProxyLoading ? 'not-allowed' : 'pointer' }}>
-                    {flashProxyLoading ? 'Running…' : 'Run Proxy'}
-                  </button>
+                  {flashProxyError && (
+                    <div style={{ padding: '12px', borderRadius: '10px', background: 'rgba(255,0,84,0.08)', border: '1px solid rgba(255,0,84,0.18)', color: 'var(--danger)', fontSize: '13px' }}>
+                      <strong>Error:</strong> {flashProxyError}
+                    </div>
+                  )}
+                  {flashProxyResult && (
+                    <pre style={{ marginTop: '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', fontSize: '12px', lineHeight: '1.4', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      {JSON.stringify(flashProxyResult, null, 2)}
+                    </pre>
+                  )}
                 </div>
-                {flashProxyError && (
-                  <div style={{ padding: '12px', borderRadius: '10px', background: 'rgba(255,0,84,0.08)', border: '1px solid rgba(255,0,84,0.18)', color: 'var(--danger)', fontSize: '13px' }}>
-                    <strong>Error:</strong> {flashProxyError}
-                  </div>
-                )}
-                {flashProxyResult && (
-                  <pre style={{ marginTop: '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', fontSize: '12px', lineHeight: '1.4', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                    {JSON.stringify(flashProxyResult, null, 2)}
-                  </pre>
-                )}
               </div>
-            </div>
-          )}
+            )}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
               <div className="glass-panel" style={{ padding: '24px' }}>
                 <h3 style={{ marginBottom: '16px' }}>Training Recommendations</h3>
@@ -1681,20 +1700,20 @@ const submitBattleCode = async () => {
                       { name: 'Cloud', desc: 'DevOps pipelines, Docker, Kubernetes, and deployment strategies.', icon: '☁️', color: 'var(--success)', bg: 'rgba(57, 245, 212, 0.08)' },
                       { name: 'DSA', desc: 'Data structures, algorithms, sorting, and space-time complexity.', icon: '🧩', color: 'var(--accent-pink)', bg: 'rgba(255, 0, 84, 0.08)' }
                     ].map(t => (
-                      <div key={t.name} 
-                           onClick={() => {
-                             setTestTopic(t.name);
-                             handleGenerateMockTest(t.name);
-                           }}
-                           className="glass-card-interactive" 
-                           style={{ 
-                             padding: '20px', 
-                             border: testTopic === t.name ? `2px solid ${t.color}` : '1px solid rgba(255,255,255,0.08)',
-                             background: testTopic === t.name ? t.bg : 'rgba(255,255,255,0.02)',
-                             borderRadius: '12px',
-                             cursor: 'pointer',
-                             transition: 'all 0.2s ease'
-                           }}>
+                      <div key={t.name}
+                        onClick={() => {
+                          setTestTopic(t.name);
+                          handleGenerateMockTest(t.name);
+                        }}
+                        className="glass-card-interactive"
+                        style={{
+                          padding: '20px',
+                          border: testTopic === t.name ? `2px solid ${t.color}` : '1px solid rgba(255,255,255,0.08)',
+                          background: testTopic === t.name ? t.bg : 'rgba(255,255,255,0.02)',
+                          borderRadius: '12px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}>
                         <div style={{ fontSize: '32px', marginBottom: '12px' }}>{t.icon}</div>
                         <h4 style={{ color: t.color, fontSize: '16px', fontWeight: 700 }}>{t.name}</h4>
                         <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '8px', lineHeight: 1.4 }}>{t.desc}</p>
@@ -1705,24 +1724,24 @@ const submitBattleCode = async () => {
 
                 <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                   <h3>Configurations</h3>
-                  
+
                   <div>
                     <label style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>DIFFICULTY</label>
                     <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                       {['Easy', 'Medium', 'Hard'].map(d => (
-                        <button key={d} 
-                                onClick={() => setTestDifficulty(d)}
-                                style={{ 
-                                  flex: 1, 
-                                  padding: '8px', 
-                                  fontSize: '12px', 
-                                  borderRadius: '8px', 
-                                  border: '1px solid rgba(255,255,255,0.1)',
-                                  background: testDifficulty === d ? 'var(--accent-blue)' : 'rgba(255,255,255,0.04)',
-                                  color: 'white',
-                                  cursor: 'pointer',
-                                  fontWeight: 600
-                                }}>
+                        <button key={d}
+                          onClick={() => setTestDifficulty(d)}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            fontSize: '12px',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: testDifficulty === d ? 'var(--accent-blue)' : 'rgba(255,255,255,0.04)',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontWeight: 600
+                          }}>
                           {d}
                         </button>
                       ))}
@@ -1731,22 +1750,22 @@ const submitBattleCode = async () => {
 
                   <div>
                     <label style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>NUMBER OF QUESTIONS</label>
-                    <select className="ide-select" 
-                            value={testQuestionsCount} 
-                            onChange={e => setTestQuestionsCount(Number(e.target.value))}
-                            style={{ width: '100%', marginTop: '8px' }}>
+                    <select className="ide-select"
+                      value={testQuestionsCount}
+                      onChange={e => setTestQuestionsCount(Number(e.target.value))}
+                      style={{ width: '100%', marginTop: '8px' }}>
                       <option value={3}>3 Questions (Express)</option>
                       <option value={5}>5 Questions (Standard)</option>
                       <option value={10}>10 Questions (Comprehensive)</option>
                       <option value={20}>20 Questions (Extended)</option>
-                      </select>
+                    </select>
                   </div>
 
                   <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <button className="btn-premium" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }} onClick={handleGenerateMockTest}>
                       <Sparkles size={16} /> Generate Test
                     </button>
-                    
+
                     <button className="btn-secondary" style={{ width: '100%' }} onClick={() => setMockTestState('history')}>
                       View Test History
                     </button>
@@ -1786,26 +1805,26 @@ const submitBattleCode = async () => {
                     {testQuestions[currentTestQIdx]?.options.map((opt, oIdx) => {
                       const isSelected = userAnswers[testQuestions[currentTestQIdx]?.id] === oIdx;
                       return (
-                        <div key={oIdx} 
-                             onClick={() => {
-                               setUserAnswers(prev => ({ ...prev, [testQuestions[currentTestQIdx].id]: oIdx }));
-                             }}
-                             className="glass-card-interactive" 
-                             style={{ 
-                               padding: '16px 20px', 
-                               borderRadius: '10px',
-                               border: isSelected ? '1px solid var(--accent-blue)' : '1px solid rgba(255,255,255,0.06)',
-                               background: isSelected ? 'rgba(0, 210, 255, 0.1)' : 'rgba(255,255,255,0.02)',
-                               cursor: 'pointer',
-                               display: 'flex',
-                               alignItems: 'center',
-                               gap: '12px',
-                               transition: 'all 0.15s ease'
-                             }}>
-                          <div style={{ 
-                            width: '24px', 
-                            height: '24px', 
-                            borderRadius: '50%', 
+                        <div key={oIdx}
+                          onClick={() => {
+                            setUserAnswers(prev => ({ ...prev, [testQuestions[currentTestQIdx].id]: oIdx }));
+                          }}
+                          className="glass-card-interactive"
+                          style={{
+                            padding: '16px 20px',
+                            borderRadius: '10px',
+                            border: isSelected ? '1px solid var(--accent-blue)' : '1px solid rgba(255,255,255,0.06)',
+                            background: isSelected ? 'rgba(0, 210, 255, 0.1)' : 'rgba(255,255,255,0.02)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            transition: 'all 0.15s ease'
+                          }}>
+                          <div style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
                             border: isSelected ? '2px solid var(--accent-blue)' : '2px solid rgba(255,255,255,0.3)',
                             background: isSelected ? 'var(--accent-blue)' : 'transparent',
                             display: 'flex',
@@ -1824,21 +1843,21 @@ const submitBattleCode = async () => {
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                    <button className="btn-secondary" 
-                            disabled={currentTestQIdx === 0} 
-                            onClick={() => setCurrentTestQIdx(idx => idx - 1)}>
+                    <button className="btn-secondary"
+                      disabled={currentTestQIdx === 0}
+                      onClick={() => setCurrentTestQIdx(idx => idx - 1)}>
                       ← Previous
                     </button>
                     {currentTestQIdx < testQuestions.length - 1 ? (
-                      <button className="btn-premium" 
-                              onClick={() => setCurrentTestQIdx(idx => idx + 1)}>
+                      <button className="btn-premium"
+                        onClick={() => setCurrentTestQIdx(idx => idx + 1)}>
                         Next Question →
                       </button>
                     ) : (
-                      <button className="btn-premium" 
-                              style={{ background: 'linear-gradient(135deg, var(--success), var(--accent-blue))' }}
-                              onClick={() => handleSubmitMockTest()}
-                              disabled={submittingTest}>
+                      <button className="btn-premium"
+                        style={{ background: 'linear-gradient(135deg, var(--success), var(--accent-blue))' }}
+                        onClick={() => handleSubmitMockTest()}
+                        disabled={submittingTest}>
                         {submittingTest ? 'Evaluating...' : 'Submit Test'}
                       </button>
                     )}
@@ -1850,12 +1869,12 @@ const submitBattleCode = async () => {
                   {/* Timer panel */}
                   <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
                     <p style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>TIME REMAINING</p>
-                    <h2 style={{ 
-                      fontSize: '32px', 
-                      fontWeight: 800, 
-                      fontFamily: 'monospace', 
+                    <h2 style={{
+                      fontSize: '32px',
+                      fontWeight: 800,
+                      fontFamily: 'monospace',
                       color: testTimer < 60 ? 'var(--danger)' : testTimer < 180 ? 'var(--warning)' : 'var(--success)',
-                      marginTop: '6px' 
+                      marginTop: '6px'
                     }}>
                       {Math.floor(testTimer / 60)}:{(testTimer % 60).toString().padStart(2, '0')}
                     </h2>
@@ -1868,33 +1887,33 @@ const submitBattleCode = async () => {
                       {testQuestions.map((q, idx) => {
                         const isAnswered = userAnswers[q.id] !== undefined;
                         const isCurrent = idx === currentTestQIdx;
-                        
+
                         return (
-                          <button key={idx} 
-                                  onClick={() => setCurrentTestQIdx(idx)}
-                                  style={{ 
-                                    aspectRatio: '1',
-                                    borderRadius: '8px',
-                                    border: isCurrent ? '2px solid var(--accent-blue)' : '1px solid rgba(255,255,255,0.1)',
-                                    background: isAnswered ? 'rgba(57, 245, 212, 0.2)' : 'rgba(255,255,255,0.03)',
-                                    color: isAnswered ? 'var(--success)' : 'white',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    fontSize: '13px'
-                                  }}>
+                          <button key={idx}
+                            onClick={() => setCurrentTestQIdx(idx)}
+                            style={{
+                              aspectRatio: '1',
+                              borderRadius: '8px',
+                              border: isCurrent ? '2px solid var(--accent-blue)' : '1px solid rgba(255,255,255,0.1)',
+                              background: isAnswered ? 'rgba(57, 245, 212, 0.2)' : 'rgba(255,255,255,0.03)',
+                              color: isAnswered ? 'var(--success)' : 'white',
+                              cursor: 'pointer',
+                              fontWeight: 'bold',
+                              fontSize: '13px'
+                            }}>
                             {idx + 1}
                           </button>
                         );
                       })}
                     </div>
 
-                    <button className="btn-danger" 
-                            style={{ width: '100%', marginTop: '24px' }} 
-                            onClick={() => {
-                              if (confirm('Are you sure you want to cancel the test? Progress will be lost.')) {
-                                setMockTestState('setup');
-                              }
-                            }}>
+                    <button className="btn-danger"
+                      style={{ width: '100%', marginTop: '24px' }}
+                      onClick={() => {
+                        if (confirm('Are you sure you want to cancel the test? Progress will be lost.')) {
+                          setMockTestState('setup');
+                        }
+                      }}>
                       Cancel Test
                     </button>
                   </div>
@@ -1966,18 +1985,18 @@ const submitBattleCode = async () => {
                   <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '16px' }}>Detailed Question Review</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {testResult.gradedQuestions.map((q, idx) => (
-                      <div key={idx} 
-                           style={{ 
-                             background: 'rgba(255,255,255,0.02)',
-                             border: `1px solid ${q.isCorrect ? 'var(--success)33' : 'var(--danger)33'}`,
-                             borderRadius: '10px',
-                             padding: '20px'
-                           }}>
+                      <div key={idx}
+                        style={{
+                          background: 'rgba(255,255,255,0.02)',
+                          border: `1px solid ${q.isCorrect ? 'var(--success)33' : 'var(--danger)33'}`,
+                          borderRadius: '10px',
+                          padding: '20px'
+                        }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                           <span style={{ fontWeight: 'bold', fontSize: '14px' }}>Question {idx + 1}</span>
-                          <span style={{ 
-                            fontSize: '12px', 
-                            background: q.isCorrect ? 'rgba(57,245,212,0.15)' : 'rgba(255,0,84,0.15)', 
+                          <span style={{
+                            fontSize: '12px',
+                            background: q.isCorrect ? 'rgba(57,245,212,0.15)' : 'rgba(255,0,84,0.15)',
                             color: q.isCorrect ? 'var(--success)' : 'var(--danger)',
                             padding: '3px 10px',
                             borderRadius: '4px',
@@ -1986,14 +2005,14 @@ const submitBattleCode = async () => {
                             {q.isCorrect ? 'Correct' : 'Incorrect'}
                           </span>
                         </div>
-                        
+
                         <p style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.5, marginBottom: '12px' }}>{q.question}</p>
-                        
+
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '16px' }}>
                           {q.options.map((opt, oIdx) => {
                             const isUserChoice = q.userAnswer === oIdx;
                             const isCorrectChoice = q.correctAnswer === oIdx;
-                            
+
                             let optionStyle = {
                               padding: '10px',
                               borderRadius: '6px',
@@ -2002,7 +2021,7 @@ const submitBattleCode = async () => {
                               background: 'rgba(255,255,255,0.01)',
                               color: 'white'
                             };
-                            
+
                             if (isCorrectChoice) {
                               optionStyle.border = '1px solid var(--success)';
                               optionStyle.background = 'rgba(57,245,212,0.1)';
@@ -2012,7 +2031,7 @@ const submitBattleCode = async () => {
                               optionStyle.background = 'rgba(255,0,84,0.1)';
                               optionStyle.color = 'var(--danger)';
                             }
-                            
+
                             return (
                               <div key={oIdx} style={optionStyle}>
                                 <strong>{String.fromCharCode(65 + oIdx)}.</strong> {opt}
@@ -2050,16 +2069,16 @@ const submitBattleCode = async () => {
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {mockHistory.map((hist, idx) => (
-                      <div key={hist.id || idx} 
-                           style={{ 
-                             background: 'rgba(255,255,255,0.02)',
-                             border: '1px solid rgba(255,255,255,0.08)',
-                             padding: '16px 20px',
-                             borderRadius: '10px',
-                             display: 'flex',
-                             justifyContent: 'space-between',
-                             alignItems: 'center'
-                           }}>
+                      <div key={hist.id || idx}
+                        style={{
+                          background: 'rgba(255,255,255,0.02)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          padding: '16px 20px',
+                          borderRadius: '10px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
                         <div>
                           <h4 style={{ fontSize: '15px', fontWeight: 'bold' }}>{hist.topic} Mock Test</h4>
                           <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
@@ -2068,10 +2087,10 @@ const submitBattleCode = async () => {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                           <div style={{ textAlign: 'right' }}>
-                            <span style={{ 
-                              fontSize: '18px', 
-                              fontWeight: 'bold', 
-                              color: hist.score >= 80 ? 'var(--success)' : hist.score >= 50 ? 'var(--warning)' : 'var(--danger)' 
+                            <span style={{
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                              color: hist.score >= 80 ? 'var(--success)' : hist.score >= 50 ? 'var(--warning)' : 'var(--danger)'
                             }}>
                               {hist.score}%
                             </span>
@@ -2079,28 +2098,28 @@ const submitBattleCode = async () => {
                               Duration: {Math.floor(hist.duration / 60)}m {hist.duration % 60}s
                             </p>
                           </div>
-                          <button className="btn-secondary" 
-                                  onClick={() => {
-                                    setTestResult({
-                                      topic: hist.topic,
-                                      difficulty: hist.difficulty,
-                                      score: hist.score,
-                                      duration: hist.duration,
-                                      feedback: `Viewing archived report from test taken on ${new Date(hist.createdAt).toLocaleDateString()}.`,
-                                      strengths: hist.strengths || [],
-                                      weaknesses: hist.weaknesses || [],
-                                      gradedQuestions: hist.questions.map(q => ({
-                                        question: q.question,
-                                        options: q.options,
-                                        correctAnswer: q.correctAnswer,
-                                        userAnswer: q.userAnswer,
-                                        explanation: q.explanation,
-                                        isCorrect: q.userAnswer === q.correctAnswer
-                                      })),
-                                      xpAwarded: hist.score >= 80 ? 150 : hist.score >= 50 ? 100 : 50
-                                    });
-                                    setMockTestState('result');
-                                  }}>
+                          <button className="btn-secondary"
+                            onClick={() => {
+                              setTestResult({
+                                topic: hist.topic,
+                                difficulty: hist.difficulty,
+                                score: hist.score,
+                                duration: hist.duration,
+                                feedback: `Viewing archived report from test taken on ${new Date(hist.createdAt).toLocaleDateString()}.`,
+                                strengths: hist.strengths || [],
+                                weaknesses: hist.weaknesses || [],
+                                gradedQuestions: hist.questions.map(q => ({
+                                  question: q.question,
+                                  options: q.options,
+                                  correctAnswer: q.correctAnswer,
+                                  userAnswer: q.userAnswer,
+                                  explanation: q.explanation,
+                                  isCorrect: q.userAnswer === q.correctAnswer
+                                })),
+                                xpAwarded: hist.score >= 80 ? 150 : hist.score >= 50 ? 100 : 50
+                              });
+                              setMockTestState('result');
+                            }}>
                             Review Result
                           </button>
                         </div>
@@ -2201,130 +2220,130 @@ const submitBattleCode = async () => {
 
         {/* ── RESUME ── */}
         {activeTab === 'resume' && (
-  <div className="resume-layout">
-    <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px', overflowY: 'auto', maxHeight: '85vh' }}>
-      <h3>Resume Editor</h3>
+          <div className="resume-layout">
+            <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px', overflowY: 'auto', maxHeight: '85vh' }}>
+              <h3>Resume Editor</h3>
 
-      {/* Basic Info */}
-      {[
-        { label: 'FULL NAME', key: 'fullName', type: 'input' },
-        { label: 'CAREER OBJECTIVE', key: 'bio', type: 'textarea' },
-        { label: 'EMAIL', key: 'email', type: 'input' },
-      ].map(f => (
-        <div key={f.key}>
-          <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
-          {f.type === 'textarea'
-            ? <textarea className="chat-input" style={{ width: '100%', marginTop: '4px', height: '56px', resize: 'none' }} value={resumeData[f.key]} onChange={e => handleResumeField(f.key, e.target.value)} />
-            : <input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={resumeData[f.key]} onChange={e => handleResumeField(f.key, e.target.value)} />
-          }
-        </div>
-      ))}
+              {/* Basic Info */}
+              {[
+                { label: 'FULL NAME', key: 'fullName', type: 'input' },
+                { label: 'CAREER OBJECTIVE', key: 'bio', type: 'textarea' },
+                { label: 'EMAIL', key: 'email', type: 'input' },
+              ].map(f => (
+                <div key={f.key}>
+                  <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
+                  {f.type === 'textarea'
+                    ? <textarea className="chat-input" style={{ width: '100%', marginTop: '4px', height: '56px', resize: 'none' }} value={resumeData[f.key]} onChange={e => handleResumeField(f.key, e.target.value)} />
+                    : <input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={resumeData[f.key]} onChange={e => handleResumeField(f.key, e.target.value)} />
+                  }
+                </div>
+              ))}
 
-      {/* Phone + Alternate Phone */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-        {[{ label: 'PHONE', key: 'phone' }, { label: 'ALTERNATE PHONE', key: 'altPhone' }].map(f => (
-          <div key={f.key}>
-            <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
-            <input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
-          </div>
-        ))}
-      </div>
+              {/* Phone + Alternate Phone */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                {[{ label: 'PHONE', key: 'phone' }, { label: 'ALTERNATE PHONE', key: 'altPhone' }].map(f => (
+                  <div key={f.key}>
+                    <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
+                    <input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
+                  </div>
+                ))}
+              </div>
 
-      {/* Education, Experience, Projects */}
-      {[
-        { label: 'EDUCATION', key: 'education', type: 'textarea' },
-        { label: 'EXPERIENCE', key: 'experience', type: 'textarea' },
-        { label: 'PROJECTS (describe your key projects)', key: 'projects', type: 'textarea' },
-      ].map(f => (
-        <div key={f.key}>
-          <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
-          <textarea className="chat-input" style={{ width: '100%', marginTop: '4px', height: '64px', resize: 'none' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
-        </div>
-      ))}
+              {/* Education, Experience, Projects */}
+              {[
+                { label: 'EDUCATION', key: 'education', type: 'textarea' },
+                { label: 'EXPERIENCE', key: 'experience', type: 'textarea' },
+                { label: 'PROJECTS (describe your key projects)', key: 'projects', type: 'textarea' },
+              ].map(f => (
+                <div key={f.key}>
+                  <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
+                  <textarea className="chat-input" style={{ width: '100%', marginTop: '4px', height: '64px', resize: 'none' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
+                </div>
+              ))}
 
-      {/* Skills + Certifications */}
-      {[
-        { label: 'TECHNICAL SKILLS (comma separated)', key: 'skills', type: 'input' },
-        { label: 'CERTIFICATIONS', key: 'certifications', type: 'textarea' },
-        { label: 'ACHIEVEMENTS & AWARDS', key: 'achievements', type: 'textarea' },
-        { label: 'INTERNSHIPS', key: 'internships', type: 'textarea' },
-        { label: 'LANGUAGES KNOWN', key: 'languages', type: 'input' },
-        { label: 'EXTRACURRICULAR ACTIVITIES (optional)', key: 'extracurricular', type: 'textarea' },
-      ].map(f => (
-        <div key={f.key}>
-          <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
-          {f.type === 'textarea'
-            ? <textarea className="chat-input" style={{ width: '100%', marginTop: '4px', height: '56px', resize: 'none' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
-            : <input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
-          }
-        </div>
-      ))}
+              {/* Skills + Certifications */}
+              {[
+                { label: 'TECHNICAL SKILLS (comma separated)', key: 'skills', type: 'input' },
+                { label: 'CERTIFICATIONS', key: 'certifications', type: 'textarea' },
+                { label: 'ACHIEVEMENTS & AWARDS', key: 'achievements', type: 'textarea' },
+                { label: 'INTERNSHIPS', key: 'internships', type: 'textarea' },
+                { label: 'LANGUAGES KNOWN', key: 'languages', type: 'input' },
+                { label: 'EXTRACURRICULAR ACTIVITIES (optional)', key: 'extracurricular', type: 'textarea' },
+              ].map(f => (
+                <div key={f.key}>
+                  <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{f.label}</label>
+                  {f.type === 'textarea'
+                    ? <textarea className="chat-input" style={{ width: '100%', marginTop: '4px', height: '56px', resize: 'none' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
+                    : <input type="text" className="chat-input" style={{ width: '100%', marginTop: '4px' }} value={resumeData[f.key] || ''} onChange={e => handleResumeField(f.key, e.target.value)} />
+                  }
+                </div>
+              ))}
 
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button className="btn-premium" onClick={saveResume}>Save</button>
-          {resumeSavedAt && <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{formatSavedAgo()}</span>}
-        </div>
-        <button className="btn-secondary" onClick={exportResumePDF}><Download size={14} /> Export PDF</button>
-      </div>
-      {resumeSaveMsg && <p style={{ fontSize: '12px', color: 'var(--success)' }}>{resumeSaveMsg}</p>}
-    </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button className="btn-premium" onClick={saveResume}>Save</button>
+                  {resumeSavedAt && <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{formatSavedAgo()}</span>}
+                </div>
+                <button className="btn-secondary" onClick={exportResumePDF}><Download size={14} /> Export PDF</button>
+              </div>
+              {resumeSaveMsg && <p style={{ fontSize: '12px', color: 'var(--success)' }}>{resumeSaveMsg}</p>}
+            </div>
 
-    {/* PREVIEW */}
-    <div>
-      <div style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
-        {['modern', 'minimal'].map(t => <button key={t} className={`btn-secondary ${resumeTemplate === t ? 'active' : ''}`} onClick={() => setResumeTemplate(t)}>{t.charAt(0).toUpperCase() + t.slice(1)}</button>)}
-      </div>
-      <div id="resume-preview-panel" className="resume-preview-panel" style={{ padding: '28px' }}>
-        <div style={{ borderBottom: '2px solid #ddd', paddingBottom: '12px', marginBottom: '15px' }}>
-          <h1 style={{ color: '#111', fontSize: '24px' }}>{resumeData.fullName}</h1>
-          <p style={{ color: '#666', fontSize: '12px', marginTop: '4px' }}>
-            📧 {resumeData.email}
-            {resumeData.phone && ` | 📞 ${resumeData.phone}`}
-            {resumeData.altPhone && ` | 📱 ${resumeData.altPhone}`}
-          </p>
-        </div>
+            {/* PREVIEW */}
+            <div>
+              <div style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
+                {['modern', 'minimal'].map(t => <button key={t} className={`btn-secondary ${resumeTemplate === t ? 'active' : ''}`} onClick={() => setResumeTemplate(t)}>{t.charAt(0).toUpperCase() + t.slice(1)}</button>)}
+              </div>
+              <div id="resume-preview-panel" className="resume-preview-panel" style={{ padding: '28px' }}>
+                <div style={{ borderBottom: '2px solid #ddd', paddingBottom: '12px', marginBottom: '15px' }}>
+                  <h1 style={{ color: '#111', fontSize: '24px' }}>{resumeData.fullName}</h1>
+                  <p style={{ color: '#666', fontSize: '12px', marginTop: '4px' }}>
+                    📧 {resumeData.email}
+                    {resumeData.phone && ` | 📞 ${resumeData.phone}`}
+                    {resumeData.altPhone && ` | 📱 ${resumeData.altPhone}`}
+                  </p>
+                </div>
 
-        {[
-          { label: 'Career Objective', key: 'bio' },
-          { label: 'Education', key: 'education' },
-          { label: 'Experience', key: 'experience' },
-          { label: 'Projects', key: 'projects' },
-          { label: 'Certifications', key: 'certifications' },
-          { label: 'Achievements & Awards', key: 'achievements' },
-          { label: 'Internships', key: 'internships' },
-        ].map(f => resumeData[f.key] ? (
-          <div key={f.key} style={{ marginBottom: '12px' }}>
-            <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px', letterSpacing: '0.5px' }}>{f.label}</h3>
-            <p style={{ fontSize: '12px', color: '#555', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{resumeData[f.key]}</p>
-          </div>
-        ) : null)}
+                {[
+                  { label: 'Career Objective', key: 'bio' },
+                  { label: 'Education', key: 'education' },
+                  { label: 'Experience', key: 'experience' },
+                  { label: 'Projects', key: 'projects' },
+                  { label: 'Certifications', key: 'certifications' },
+                  { label: 'Achievements & Awards', key: 'achievements' },
+                  { label: 'Internships', key: 'internships' },
+                ].map(f => resumeData[f.key] ? (
+                  <div key={f.key} style={{ marginBottom: '12px' }}>
+                    <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px', letterSpacing: '0.5px' }}>{f.label}</h3>
+                    <p style={{ fontSize: '12px', color: '#555', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{resumeData[f.key]}</p>
+                  </div>
+                ) : null)}
 
-        <div style={{ marginBottom: '12px' }}>
-          <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px' }}>Technical Skills</h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-            {(Array.isArray(resumeData.skills) ? resumeData.skills : String(resumeData.skills || '').split(',')).map((s, i) => (
-              <span key={i} style={{ background: '#f0f0f5', color: '#333', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>{String(s).trim()}</span>
-            ))}
-          </div>
-        </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px' }}>Technical Skills</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                    {(Array.isArray(resumeData.skills) ? resumeData.skills : String(resumeData.skills || '').split(',')).map((s, i) => (
+                      <span key={i} style={{ background: '#f0f0f5', color: '#333', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>{String(s).trim()}</span>
+                    ))}
+                  </div>
+                </div>
 
-        {resumeData.languages && (
-          <div style={{ marginBottom: '12px' }}>
-            <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px' }}>Languages</h3>
-            <p style={{ fontSize: '12px', color: '#555' }}>{resumeData.languages}</p>
+                {resumeData.languages && (
+                  <div style={{ marginBottom: '12px' }}>
+                    <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px' }}>Languages</h3>
+                    <p style={{ fontSize: '12px', color: '#555' }}>{resumeData.languages}</p>
+                  </div>
+                )}
+                {resumeData.extracurricular && (
+                  <div style={{ marginBottom: '12px' }}>
+                    <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px' }}>Extracurricular Activities</h3>
+                    <p style={{ fontSize: '12px', color: '#555', whiteSpace: 'pre-wrap' }}>{resumeData.extracurricular}</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
-        {resumeData.extracurricular && (
-          <div style={{ marginBottom: '12px' }}>
-            <h3 style={{ fontSize: '13px', textTransform: 'uppercase', color: '#444', marginBottom: '5px' }}>Extracurricular Activities</h3>
-            <p style={{ fontSize: '12px', color: '#555', whiteSpace: 'pre-wrap' }}>{resumeData.extracurricular}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-)}
 
 
         {/* ── MARKETPLACE ── */}
@@ -2400,7 +2419,7 @@ const submitBattleCode = async () => {
                     <X style={{ cursor: 'pointer' }} onClick={() => { setShowPaymentModal(false); setPaymentSuccess(false); setCardNumber(''); }} />
                   </div>
                   <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    <img src={checkoutCourse?.image} alt="" style={{ width: '64px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={e => e.target.style.display='none'} />
+                    <img src={checkoutCourse?.image} alt="" style={{ width: '64px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={e => e.target.style.display = 'none'} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: '12px', fontWeight: 600 }}>{checkoutCourse?.title}</p>
                       <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{checkoutCourse?.instructor}</p>
@@ -2424,7 +2443,7 @@ const submitBattleCode = async () => {
                           style={{ width: '100%' }}
                           placeholder="4242 4242 4242 4242"
                           value={cardNumber}
-                          onChange={e => { const v = e.target.value.replace(/\D/g,'').slice(0,16); setCardNumber(v.replace(/(.{4})/g,'$1 ').trim()); }}
+                          onChange={e => { const v = e.target.value.replace(/\D/g, '').slice(0, 16); setCardNumber(v.replace(/(.{4})/g, '$1 ').trim()); }}
                         />
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -2438,7 +2457,7 @@ const submitBattleCode = async () => {
                         </div>
                       </div>
                       <button className="btn-premium" style={{ width: '100%', padding: '14px' }}
-                        onClick={() => { if (!cardNumber || cardNumber.replace(/\s/g,'').length < 16) { addNotif('⚠️ Enter a valid card number!'); return; } processPayment(); }}
+                        onClick={() => { if (!cardNumber || cardNumber.replace(/\s/g, '').length < 16) { addNotif('⚠️ Enter a valid card number!'); return; } processPayment(); }}
                       >
                         Pay {checkoutCourse?.price} Securely →
                       </button>
@@ -2451,7 +2470,7 @@ const submitBattleCode = async () => {
           </>
         )}
 
-        
+
 
         {/* ── PLACEMENTS ── */}
         {activeTab === 'placements' && (
@@ -2619,8 +2638,8 @@ const submitBattleCode = async () => {
           </div>
         )}
 
-        
-  
+
+
       </main>
     </div>
   );

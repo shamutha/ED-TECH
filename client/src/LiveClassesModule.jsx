@@ -22,9 +22,9 @@ export default function LiveClassesModule() {
 
   // STATE: Chat & Communication
   const [webinarMessages, setWebinarMessages] = useState([
-    { sender: 'Instructor', text: 'Welcome everyone! Let\'s start with architecture patterns.', time: '09:00 AM' },
-    { sender: 'Alice', text: 'What\'s the best pattern for microservices?', time: '09:02 AM' },
-    { sender: 'Instructor', text: 'Great question! Let\'s discuss event-driven architecture.', time: '09:03 AM' }
+    { sender: 'Instructor', text: "Welcome everyone! Let's start with architecture patterns.", time: '09:00 AM' },
+    { sender: 'Alice', text: "What's the best pattern for microservices?", time: '09:02 AM' },
+    { sender: 'Instructor', text: "Great question! Let's discuss event-driven architecture.", time: '09:03 AM' }
   ]);
   const [chatInput, setChatInput] = useState('');
 
@@ -42,7 +42,7 @@ export default function LiveClassesModule() {
   });
   const [userVoted, setUserVoted] = useState(false);
 
-  // STATE: Class & Webinar Data
+  // STATE: Live Classes & Webinars data
   const [liveClasses] = useState([
     {
       id: 1,
@@ -118,6 +118,61 @@ export default function LiveClassesModule() {
     { type: 'document', name: 'Assignment 3 - Building a Scalable API', size: 'PDF', link: '#' },
     { type: 'video', name: 'Pre-recorded Deep Dive - Event Sourcing', size: '45 min', link: '#' }
   ]);
+
+  // Additional UI state
+  const [remindedClasses, setRemindedClasses] = useState(new Set());
+  const [isRecording, setIsRecording] = useState(false);
+
+  // --- Handlers ---
+  const handleJoinClass = (cls) => {
+    if (cls.meetLink) {
+      window.open(cls.meetLink, '_blank');
+    } else {
+      alert('Meeting link not available yet.');
+    }
+  };
+
+  const handleSetReminder = (clsId) => {
+    setRemindedClasses(prev => new Set(prev).add(clsId));
+    alert('Reminder set for this class!');
+  };
+
+  const handleStartRecording = () => {
+    setIsRecording(true);
+    alert('Recording started (placeholder).');
+  };
+
+  const handleRegisterWebinar = (webinar) => {
+    // Placeholder: open a registration link if it existed.
+    alert(`Registered for webinar: ${webinar.title}`);
+  };
+
+  // duplicate removed: webinarMessages state
+
+  // duplicate removed: chatInput state
+
+
+  // STATE: Polls & Q&A
+  // duplicate removed: activeTab state
+
+  // duplicate removed: currentPoll state
+
+  // duplicate removed: userVoted state
+
+
+  // STATE: Class & Webinar Data
+  // duplicate removed: liveClasses data
+
+
+  // duplicate removed: webinars data
+
+
+  
+    
+
+
+
+  
 
   // DRAWING FUNCTIONS
   const isDrawingRef = useRef(false);
@@ -384,7 +439,7 @@ export default function LiveClassesModule() {
                         }}
                         onMouseEnter={e => e.target.style.transform = 'translateY(-1px)'}
                         onMouseLeave={e => e.target.style.transform = 'translateY(0)'}
-                        onClick={() => window.open(cls.meetLink, '_blank')}
+                        onClick={() => handleJoinClass(cls)}
                       >
                         Join Now →
                       </button>
@@ -638,6 +693,7 @@ export default function LiveClassesModule() {
                     cursor: 'pointer',
                     fontWeight: 600
                   }}
+                  onClick={handleStartRecording}
                 >
                   ⏺️ Start Recording
                 </button>

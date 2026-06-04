@@ -1,5 +1,6 @@
 import express from 'express';
 import crypto from 'crypto';
+import razorpay from './razorpay.js';
 import {
   saveResume,
   getResume,
@@ -78,13 +79,13 @@ router.post('/analytics/activity', async (req, res) => {
     const current = await getAnalytics();
     const subIndex = current.dailySubmissions.findIndex(s => s.date === date);
     let updatedSubmissions = [...current.dailySubmissions];
-    
+
     if (subIndex >= 0) {
       updatedSubmissions[subIndex].count += (count || 1);
     } else {
       updatedSubmissions.push({ date, count: count || 1 });
     }
-    
+
     const updated = await saveAnalytics({
       dailySubmissions: updatedSubmissions,
       xp: current.xp + 50
@@ -138,7 +139,7 @@ router.get('/jobs/applications', async (req, res) => {
 // 6. Online Coding Platform: Compilation and Sandbox Evaluation Engine
 router.post('/compile', async (req, res) => {
   const { code, language, problemId } = req.body;
-  
+
   if (!code) {
     return res.status(400).json({ error: 'No code provided' });
   }
@@ -257,15 +258,27 @@ router.post('/compile', async (req, res) => {
 
 // Optional proxy to work around third-party CORS limits (e.g., extension.flash.co)
 // Usage: POST /api/proxy/flash with the same body the extension expects.
-router.post('/proxy/flash', async (req, res) => {
+// Added CORS preflight handling
+router.options('/proxy/flash', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Extension-Id, X-Extension-Timestamp, X-Extension-Signature, Channel-Type, X-Country-Code, X-Timezone');
+  res.sendStatus(200);
+});
+
+router.all('/proxy/flash', async (req, res) => {
+  // Set CORS header for actual request
+  res.setHeader('Access-Control-Allow-Origin', '*');
   const upstream = 'https://extension.flash.co/api/extension/pdp-detector';
   const timeoutMs = Number(process.env.FLASH_PROXY_TIMEOUT_MS || 8000);
 
-  if (!req.body || Object.keys(req.body).length === 0) {
+  // Allow empty body for GET requests
+  const isDummy = !process.env.FLASH_EXTENSION_SECRET || process.env.FLASH_EXTENSION_SECRET === 'dummy_secret_12345';
+  if (req.method !== 'GET' && (!req.body || Object.keys(req.body).length === 0) && !isDummy) {
     return res.status(400).json({ error: 'Flash proxy requires a JSON body.' });
   }
 
-  const requestBody = JSON.stringify(req.body);
+  const requestBody = req.method === 'GET' ? '' : JSON.stringify(req.body);
   const secret = process.env.FLASH_EXTENSION_SECRET;
   const extensionId = process.env.FLASH_EXTENSION_ID || 'flash-extension';
   const channelType = process.env.FLASH_CHANNEL_TYPE || 'browser';
@@ -279,11 +292,27 @@ router.post('/proxy/flash', async (req, res) => {
     });
   }
 
+  // If secret is a dummy placeholder, skip signing (use for local testing)
+  // isDummy already defined above
   const timestamp = Date.now().toString();
-  const signature = crypto.createHmac('sha256', secret)
-    .update(`${timestamp}.${requestBody}`)
-    .digest('hex');
+  let signature = '';
+  if (!isDummy) {
+    signature = crypto.createHmac('sha256', secret)
+      .update(`${timestamp}.${requestBody}`)
+      .digest('hex');
+  }
 
+  // If using dummy secret, return mock response without contacting upstream
+  if (isDummy) {
+    console.log('[flash proxy] dummy secret detected, returning mock response');
+    return res.status(200).json({
+      success: true,
+      mock: true,
+      message: 'This is a mock response for local development.',
+      // You can include any placeholder data expected by the frontend
+      data: {}
+    });
+  }
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json, text/plain, */*',
@@ -292,13 +321,14 @@ router.post('/proxy/flash', async (req, res) => {
     'Referer': 'https://extension.flash.co/',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
     'X-Extension-Timestamp': timestamp,
-    'X-Extension-Signature': signature,
+    ...(isDummy ? {} : { 'X-Extension-Signature': signature }),
     'X-Extension-Id': extensionId,
     'Channel-Type': channelType,
     'X-Country-Code': countryCode,
     'X-Timezone': timezone,
     'Cache-Control': 'no-cache'
   };
+
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -334,6 +364,7 @@ router.post('/proxy/flash', async (req, res) => {
       });
     }
 
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.status(resp.status).send(text);
   } catch (err) {
     clearTimeout(timeout);
@@ -715,7 +746,7 @@ const MOCK_QUESTION_BANK = {
 router.post('/mocktest/generate', (req, res) => {
   const { topic, difficulty, numQuestions = 5 } = req.body;
   const numQuestionsInt = parseInt(numQuestions, 10) || 5;
-  
+
   const topicBank = MOCK_QUESTION_BANK[topic] || MOCK_QUESTION_BANK['Frontend'];
   let questions = topicBank[difficulty];
   if (!questions) {
@@ -748,7 +779,7 @@ router.post('/mocktest/generate', (req, res) => {
 router.post('/mocktest/submit', async (req, res) => {
   try {
     const { userName = 'Student', topic, difficulty, duration, answers } = req.body;
-    
+
     const topicBank = MOCK_QUESTION_BANK[topic] || MOCK_QUESTION_BANK['Frontend'];
     const originalQuestions = topicBank[difficulty] || Object.values(topicBank).flat();
 
@@ -853,6 +884,34 @@ router.get('/mocktest/history', async (req, res) => {
     res.json({ success: true, history });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+router.post('/payment/create-order', async (req, res) => {
+  try {
+    const { amount = 500 } = req.body;
+
+    if (!razorpay) {
+      console.warn('Razorpay not configured – returning mock order');
+      const mockOrder = {
+        id: `mock_${Date.now()}`,
+        amount: amount * 100,
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}`,
+        status: 'created'
+      };
+      return res.json({ success: true, order: mockOrder });
+    }
+
+    const order = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: 'INR',
+      receipt: `receipt_${Date.now()}`
+    });
+
+    res.json({ success: true, order });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
