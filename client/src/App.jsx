@@ -5,7 +5,7 @@ import {
   ShoppingBag, Briefcase, BarChart3, Award, Sparkles, Bell,
   CheckCircle, AlertTriangle, X, Send, Trash2, Download, Trophy,
   Maximize2, Minimize2, MicOff, Volume2, Clock, Star, BookOpen, HelpCircle,
-  Lock, Eye, Users, Zap, TrendingUp, Shield, Radio, Share2, Pause, Play
+  Lock, Eye, Users, Zap, TrendingUp, Shield, Radio, Share2, Pause, Play, ScreenShare
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import * as tf from '@tensorflow/tfjs';
@@ -221,6 +221,7 @@ export default function App() {
   const [socket, setSocket] = useState(null);
   const socketRef = useRef(null);
   const [flashProxyResult, setFlashProxyResult] = useState(null);
+  const screenVideoRef = useRef(null);
   const [flashProxyError, setFlashProxyError] = useState(null);
   const [flashProxyLoading, setFlashProxyLoading] = useState(false);
 
@@ -601,6 +602,7 @@ export default function App() {
       videoRef.current.srcObject.getTracks().forEach(t => t.stop());
       videoRef.current.srcObject = null;
     }
+    stopScreenMonitoring();
 
     const sc = scores || answerScores;
     const avgScore = sc.length > 0 ? Math.round(sc.reduce((a, s) => a + s.score, 0) / sc.length) : 0;
@@ -1170,6 +1172,9 @@ export default function App() {
       setScreenStream(stream);
       setScreenMonitorActive(true);
       addNotif('🖥️ Screen monitoring enabled for proctoring.');
+      if (screenVideoRef.current) {
+        screenVideoRef.current.srcObject = stream;
+      }
       stream.getVideoTracks()[0].addEventListener('ended', () => {
         setScreenMonitorActive(false);
         setScreenStream(null);
@@ -1181,6 +1186,9 @@ export default function App() {
   };
 
   const stopScreenMonitoring = () => {
+    if (screenVideoRef.current) {
+        screenVideoRef.current.srcObject = null;
+    }
     screenStream?.getTracks().forEach(track => track.stop());
     setScreenStream(null);
     setScreenMonitorActive(false);
@@ -1206,6 +1214,12 @@ export default function App() {
     };
     initializeTensorFlow();
   }, []);
+
+  useEffect(() => {
+    if (screenVideoRef.current && screenStream) {
+      screenVideoRef.current.srcObject = screenStream;
+    }
+  }, [screenStream, interviewFullscreen]);
 
   useEffect(() => {
     if (!socket) return;
@@ -1267,12 +1281,19 @@ export default function App() {
               <span style={{ fontSize: '12px', background: 'rgba(57,245,212,0.15)', color: 'var(--success)', padding: '3px 10px', borderRadius: '4px' }}>🔴 LIVE</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <button 
+                onClick={screenMonitorActive ? stopScreenMonitoring : startScreenMonitoring}
+                style={{ background: screenMonitorActive ? 'rgba(57,245,212,0.15)' : 'rgba(255,255,255,0.08)', border: 'none', color: screenMonitorActive ? 'var(--success)' : 'white', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <ScreenShare size={14} /> {screenMonitorActive ? 'Screen Active' : 'Share Screen'}
+              </button>
               <span style={{ fontFamily: 'monospace', fontSize: '16px', color: 'var(--warning)', fontWeight: 700 }}>⏱ {formatTime(interviewTimer)}</span>
               {proctorWarnings.length > 0 && (
                 <span style={{ fontSize: '12px', background: 'rgba(255,0,84,0.15)', color: 'var(--danger)', padding: '3px 10px', borderRadius: '4px' }}>
                   ⚠️ {proctorWarnings.length}/{MAX_VIOLATIONS} violations
                 </span>
               )}
+              
               <button onClick={() => setInterviewFullscreen(false)} style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: 'white', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
                 <Minimize2 size={14} /> Exit Fullscreen
               </button>
@@ -1284,8 +1305,11 @@ export default function App() {
             {/* Left: Camera + transcript */}
             <div style={{ display: 'flex', flexDirection: 'column', padding: '20px', gap: '16px' }}>
               {/* Camera */}
-              <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', background: '#0a0915', flex: '0 0 340px' }}>
+              <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', background: '#0a0915', flex: '0 0 340px', display: 'grid', gridTemplateColumns: screenMonitorActive ? '1fr 1fr' : '1fr', gap: '2px' }}>
                 <video ref={videoRef} autoPlay playsInline muted style={{ width: '100%', height: '340px', objectFit: 'cover', display: 'block' }} />
+                {screenMonitorActive && (
+                  <video ref={screenVideoRef} autoPlay playsInline muted style={{ width: '100%', height: '340px', objectFit: 'cover', display: 'block', background: '#000' }} />
+                )}
                 <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '8px' }}>
                   <span style={{ fontSize: '11px', background: proctorWarnings.length > 0 ? 'rgba(255,0,84,0.9)' : 'rgba(57,245,212,0.9)', color: 'white', padding: '4px 10px', borderRadius: '4px', fontWeight: 600 }}>
                     {proctorWarnings.length > 0 ? `⚠️ FLAGGED (${proctorWarnings.length})` : '✅ PROCTOR OK'}
@@ -2644,95 +2668,3 @@ export default function App() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

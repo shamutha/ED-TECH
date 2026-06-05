@@ -1,5 +1,10 @@
 import express from 'express';
 import crypto from 'crypto';
+import stripe from './stripe.js';
+import { transcribeAudio, checkPlagiarism } from './ai.js';
+import { generateCertificate } from './certificate.js';
+import { getLeaderboard } from './db.js';
+import { handleWebRTCOffer, handleWebRTCAnswer, handleWebRTCCandidate } from './webrtc.js';
 import razorpay from './razorpay.js';
 import {
   saveResume,
@@ -889,7 +894,7 @@ router.get('/mocktest/history', async (req, res) => {
 router.post('/payment/create-order', async (req, res) => {
   try {
     const { amount = 500 } = req.body;
-
+    // Existing Razorpay order creation (kept as is)
     if (!razorpay) {
       console.warn('Razorpay not configured – returning mock order');
       const mockOrder = {
@@ -901,18 +906,106 @@ router.post('/payment/create-order', async (req, res) => {
       };
       return res.json({ success: true, order: mockOrder });
     }
-
     const order = await razorpay.orders.create({
       amount: amount * 100,
       currency: 'INR',
       receipt: `receipt_${Date.now()}`
     });
-
     res.json({ success: true, order });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: error.message });
   }
+});
+
+// Stripe subscription endpoint (stubbed for now)
+router.post('/payment/create-subscription', async (req, res) => {
+  try {
+    const { customerId, priceId } = req.body;
+    if (!stripe) {
+      console.warn('Stripe not configured – subscription endpoint stubbed');
+      return res.json({ success: true, subscriptionId: `stub_${Date.now()}` });
+    }
+    const subscription = await stripe.subscriptions.create({
+      customer: customerId,
+      items: [{ price: priceId }],
+      expand: ['latest_invoice.payment_intent']
+    });
+    res.json({ success: true, subscription });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// AI transcription endpoint
+router.post('/ai/transcribe', async (req, res) => {
+  try {
+    // Expect multipart/form-data with field 'audio'
+    if (!req.files || !req.files.audio) {
+      return res.status(400).json({ error: 'Audio file missing' });
+    }
+    const filePath = req.files.audio.path;
+    const result = await transcribeAudio(filePath);
+    res.json({ success: true, transcript: result.text || result.transcription });
+  } catch (e) {
+    console.error('Transcription error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Plagiarism check endpoint (stub)
+router.post('/ai/plagiarism', async (req, res) => {
+  try {
+    const { code } = req.body;
+    const result = await checkPlagiarism(code);
+    res.json({ success: true, result });
+  } catch (e) {
+    console.error('Plagiarism check error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Leaderboard endpoint
+router.get('/leaderboard', async (req, res) => {
+  try {
+    const board = await getLeaderboard();
+    res.json({ success: true, board });
+  } catch (e) {
+    console.error('Leaderboard error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Certificate generation endpoint
+router.get('/certificates/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const pdfBuffer = await generateCertificate(userId);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="certificate_${userId}.pdf"`);
+    res.send(pdfBuffer);
+  } catch (e) {
+    console.error('Certificate generation error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// WebRTC signalling routes
+router.post('/webrtc/offer', (req, res) => {
+  const { from, to, offer } = req.body;
+  handleWebRTCOffer(from, to, offer);
+  res.json({ success: true });
+});
+router.post('/webrtc/answer', (req, res) => {
+  const { from, to, answer } = req.body;
+  handleWebRTCAnswer(from, to, answer);
+  res.json({ success: true });
+});
+router.post('/webrtc/candidate', (req, res) => {
+  const { from, to, candidate } = req.body;
+  handleWebRTCCandidate(from, to, candidate);
+  res.json({ success: true });
 });
 
 export default router;

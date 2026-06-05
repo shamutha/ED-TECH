@@ -7,6 +7,7 @@ let razorpay = null;
 if (keyId && keySecret) {
   // Initialize Razorpay client only when credentials are available
   razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
+  console.info('✅ Razorpay credentials integration successful .');
 } else {
   console.warn('Razorpay credentials not set – integration disabled.');
 }

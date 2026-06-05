@@ -58,7 +58,12 @@ async function tryConnect(mongoUri, attempt) {
 }
 
 export async function connectDB() {
-  const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/shamutha';
+  const mongoUri = process.env.MONGO_URI;
+  if (!mongoUri) {
+    console.warn('⚠️ MONGO_URI not set – skipping MongoDB connection, using local JSON storage.');
+    isUsingMongoDB = false;
+    return;
+  }
   const maxAttempts = 5;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const ok = await tryConnect(mongoUri, attempt);
@@ -71,7 +76,6 @@ export async function connectDB() {
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }
-
   console.warn('⚠️ MongoDB connection failed after multiple attempts. Falling back to local JSON database storage.');
   isUsingMongoDB = false;
 }
