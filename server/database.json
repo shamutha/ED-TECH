@@ -198,6 +198,22 @@
       "email": "candidate@shamutha.edu",
       "appliedAt": "2026-06-01T13:26:49.148Z",
       "status": "Applied"
+    },
+    {
+      "id": "mq1g5zsh",
+      "jobId": "j1",
+      "applicantName": "Shamutha User",
+      "email": "candidate@shamutha.edu",
+      "appliedAt": "2026-06-05T21:39:30.545Z",
+      "status": "Applied"
+    },
+    {
+      "id": "mq1g62dz",
+      "jobId": "j3",
+      "applicantName": "Shamutha User",
+      "email": "candidate@shamutha.edu",
+      "appliedAt": "2026-06-05T21:39:33.911Z",
+      "status": "Applied"
     }
   ]
 }
