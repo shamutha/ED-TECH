@@ -970,7 +970,7 @@ router.post('/ai/plagiarism', async (req, res) => {
 router.get('/leaderboard', async (req, res) => {
   try {
     const board = await getLeaderboard();
-    res.json({ success: true, board });
+    res.json({ success: true, leaderboard: board });
   } catch (e) {
     console.error('Leaderboard error:', e);
     res.status(500).json({ error: e.message });

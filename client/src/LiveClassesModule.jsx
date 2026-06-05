@@ -14,6 +14,8 @@ import {
 export default function LiveClassesModule() {
   const canvasRef = useRef(null);
   const chatEndRef = useRef(null);
+  const chatListRef = useRef(null);
+  const chatMountedRef = useRef(false);
 
   // STATE: Drawing
   const [drawingColor, setDrawingColor] = useState('#00d2ff');
@@ -256,7 +258,13 @@ export default function LiveClassesModule() {
   };
 
   // CHAT FUNCTIONS
-  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [webinarMessages]);
+  useEffect(() => {
+    // Skip the initial mount so opening the page doesn't yank the window down to the chat.
+    if (!chatMountedRef.current) { chatMountedRef.current = true; return; }
+    // Scroll only the chat container (not the whole page) when a new message arrives.
+    const list = chatListRef.current;
+    if (list) list.scrollTop = list.scrollHeight;
+  }, [webinarMessages]);
 
   const sendChat = () => {
     if (!chatInput.trim()) return;
@@ -496,24 +504,47 @@ export default function LiveClassesModule() {
                   ) : (
                     <>
                       <p style={{ fontSize: '11px', color: 'var(--warning)', marginBottom: '10px' }}>⏳ {cls.startTime}</p>
-                      <button
-                        style={{
-                          width: '100%',
-                          padding: '10px',
-                          background: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          color: 'white',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: 600,
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                      >
-                        🔔 Set Reminder
-                      </button>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <button
+                          style={{
+                            width: '100%',
+                            padding: '10px',
+                            background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))',
+                            border: 'none',
+                            color: 'white',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                          onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                          onClick={() => handleJoinClass(cls)}
+                        >
+                          Join Now →
+                        </button>
+                        <button
+                          disabled={remindedClasses.has(cls.id)}
+                          style={{
+                            width: '100%',
+                            padding: '10px',
+                            background: remindedClasses.has(cls.id) ? 'rgba(57,245,212,0.12)' : 'rgba(255,255,255,0.06)',
+                            border: remindedClasses.has(cls.id) ? '1px solid var(--success)' : '1px solid rgba(255,255,255,0.1)',
+                            color: remindedClasses.has(cls.id) ? 'var(--success)' : 'white',
+                            borderRadius: '6px',
+                            cursor: remindedClasses.has(cls.id) ? 'default' : 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={e => { if (!remindedClasses.has(cls.id)) e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+                          onMouseLeave={e => { if (!remindedClasses.has(cls.id)) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+                          onClick={() => handleSetReminder(cls.id)}
+                        >
+                          {remindedClasses.has(cls.id) ? '✅ Reminder Set' : '🔔 Set Reminder'}
+                        </button>
+                      </div>
                     </>
                   )}
                 </div>
@@ -754,7 +785,7 @@ export default function LiveClassesModule() {
               {/* CHAT */}
               <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1, minHeight: '280px' }}>
                 <h4 style={{ marginBottom: '10px', fontSize: '13px', fontWeight: 600 }}>💬 Live Chat</h4>
-                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
+                <div ref={chatListRef} style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
                   {webinarMessages.map((m, i) => (
                     <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: m.sender === 'You' ? 'flex-end' : 'flex-start' }}>
                       <span style={{ fontSize: '9px', color: 'var(--text-secondary)', marginBottom: '2px' }}>{m.sender}</span>

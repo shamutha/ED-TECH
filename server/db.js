@@ -280,7 +280,38 @@ export async function addXP(name, amount) {
 }
 
 export async function getLeaderboard() {
-  return [];
+  // Seed competitors for the global leaderboard. Any locally-stored players
+  // (db.leaderboard) are merged in by name so real activity bubbles up over the seed.
+  const seed = [
+    { name: 'Shamutha T', xp: 9650, solvedCount: 168, battlesWon: 45 },
+    { name: 'Alex Chen', xp: 8420, solvedCount: 142, battlesWon: 38 },
+    { name: 'Priya Sharma', xp: 7890, solvedCount: 128, battlesWon: 31 },
+    { name: 'Rohan Mehta', xp: 6540, solvedCount: 98, battlesWon: 24 },
+    { name: 'Sara Kim', xp: 5200, solvedCount: 87, battlesWon: 19 },
+    { name: 'Dev Patel', xp: 4100, solvedCount: 72, battlesWon: 15 },
+    { name: 'Mei Lin', xp: 3650, solvedCount: 64, battlesWon: 12 },
+    { name: 'Carlos Ruiz', xp: 2980, solvedCount: 51, battlesWon: 9 },
+    { name: 'Aisha Khan', xp: 2210, solvedCount: 43, battlesWon: 6 }
+  ];
+
+  const byName = new Map(seed.map(u => [u.name, { ...u }]));
+  try {
+    const db = readLocalDB();
+    for (const p of (db.leaderboard || [])) {
+      if (!p?.name) continue;
+      const existing = byName.get(p.name) || { name: p.name, xp: 0, solvedCount: 0, battlesWon: 0 };
+      byName.set(p.name, {
+        name: p.name,
+        xp: p.xp ?? existing.xp,
+        solvedCount: p.solvedCount ?? existing.solvedCount,
+        battlesWon: p.battlesWon ?? existing.battlesWon
+      });
+    }
+  } catch { /* local DB optional */ }
+
+  return Array.from(byName.values())
+    .sort((a, b) => b.xp - a.xp)
+    .map((u, i) => ({ rank: i + 1, ...u }));
 }
 
 export async function enrollCourse(courseId) {
