@@ -42,8 +42,12 @@ export default function LiveClassesModule() {
   });
   const [userVoted, setUserVoted] = useState(false);
 
+  // STATE: Schedule-a-class form
+  const [newClass, setNewClass] = useState({ title: '', dateTime: '', duration: '', meetLink: '', description: '' });
+  const [scheduleMsg, setScheduleMsg] = useState('');
+
   // STATE: Live Classes & Webinars data
-  const [liveClasses] = useState([
+  const [liveClasses, setLiveClasses] = useState([
     {
       id: 1,
       title: 'MERN Scalability & Performance',
@@ -81,6 +85,41 @@ export default function LiveClassesModule() {
       recordingAvailable: false
     }
   ]);
+
+  // Schedule a new live class from the "Create New Live Class" form
+  const handleScheduleClass = () => {
+    if (!newClass.title.trim()) {
+      setScheduleMsg('⚠️ Please enter a class title.');
+      return;
+    }
+
+    // Format the chosen date/time into a friendly label (falls back to "Upcoming")
+    let startTime = 'Upcoming';
+    if (newClass.dateTime) {
+      const d = new Date(newClass.dateTime);
+      if (!isNaN(d)) {
+        startTime = d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+    }
+
+    const scheduled = {
+      id: Date.now(),
+      title: newClass.title.trim(),
+      instructor: 'You (Host)',
+      students: 0,
+      status: 'upcoming',
+      startTime,
+      duration: newClass.duration ? `${newClass.duration} min` : '60 min',
+      meetLink: newClass.meetLink.trim() || null,
+      description: newClass.description.trim(),
+      attendanceRate: 0,
+      recordingAvailable: false
+    };
+
+    setLiveClasses(prev => [scheduled, ...prev]);
+    setNewClass({ title: '', dateTime: '', duration: '', meetLink: '', description: '' });
+    setScheduleMsg(`✅ "${scheduled.title}" scheduled for ${startTime}.`);
+  };
 
   const [webinars] = useState([
     {
@@ -289,6 +328,8 @@ export default function LiveClassesModule() {
                   <input
                     type="text"
                     placeholder="e.g., Advanced React Patterns"
+                    value={newClass.title}
+                    onChange={e => setNewClass(p => ({ ...p, title: e.target.value }))}
                     style={{
                       width: '100%',
                       padding: '10px 12px',
@@ -305,20 +346,20 @@ export default function LiveClassesModule() {
                     <label style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
                       DATE & TIME
                     </label>
-                    <input type="datetime-local" style={{ width: '100%', padding: '10px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: 'white', fontSize: '13px' }} />
+                    <input type="datetime-local" value={newClass.dateTime} onChange={e => setNewClass(p => ({ ...p, dateTime: e.target.value }))} style={{ width: '100%', padding: '10px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: 'white', fontSize: '13px' }} />
                   </div>
                   <div>
                     <label style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
                       DURATION (MIN)
                     </label>
-                    <input type="number" placeholder="60" style={{ width: '100%', padding: '10px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: 'white', fontSize: '13px' }} />
+                    <input type="number" placeholder="60" value={newClass.duration} onChange={e => setNewClass(p => ({ ...p, duration: e.target.value }))} style={{ width: '100%', padding: '10px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: 'white', fontSize: '13px' }} />
                   </div>
                 </div>
                 <div>
                   <label style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
                     MEETING LINK (Google Meet / Zoom)
                   </label>
-                  <input type="url" placeholder="https://meet.google.com/..." style={{ width: '100%', padding: '10px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: 'white', fontSize: '13px' }} />
+                  <input type="url" placeholder="https://meet.google.com/..." value={newClass.meetLink} onChange={e => setNewClass(p => ({ ...p, meetLink: e.target.value }))} style={{ width: '100%', padding: '10px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: 'white', fontSize: '13px' }} />
                 </div>
                 <div>
                   <label style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
@@ -326,6 +367,8 @@ export default function LiveClassesModule() {
                   </label>
                   <textarea
                     placeholder="What will students learn?"
+                    value={newClass.description}
+                    onChange={e => setNewClass(p => ({ ...p, description: e.target.value }))}
                     style={{
                       width: '100%',
                       padding: '10px 12px',
@@ -354,9 +397,15 @@ export default function LiveClassesModule() {
                   }}
                   onMouseEnter={e => e.target.style.transform = 'translateY(-2px)'}
                   onMouseLeave={e => e.target.style.transform = 'translateY(0)'}
+                  onClick={handleScheduleClass}
                 >
                   📅 Schedule Class
                 </button>
+                {scheduleMsg && (
+                  <p style={{ fontSize: '12px', margin: '4px 0 0', color: scheduleMsg.startsWith('⚠️') ? 'var(--warning)' : 'var(--success)' }}>
+                    {scheduleMsg}
+                  </p>
+                )}
               </div>
             </div>
 
