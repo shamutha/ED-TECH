@@ -1129,25 +1129,40 @@ export default function App() {
     document.body.appendChild(script);
   });
 
-  const processPaymentIntegration = async () => {
+  const processPaymentIntegration = async (course) => {
     const loaded = await loadRazorpayScript();
 
     if (!loaded) {
-      alert('Razorpay load failed');
+      addNotif('⚠️ Razorpay failed to load. Check your connection.');
       return;
     }
 
-    const res = await fetch(`${API_BASE}/payment/create-order`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        amount: 500
-      })
-    });
+    // Parse the ₹ amount off the course price (e.g. "₹499" -> 499); default to 499.
+    const amount = course?.price
+      ? parseInt(String(course.price).replace(/[^\d]/g, ''), 10) || 499
+      : 499;
 
-    const data = await res.json();
+    let data;
+    try {
+      const res = await fetch(`${API_BASE}/payment/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount })
+      });
+      data = await res.json();
+    } catch (err) {
+      addNotif('⚠️ Could not reach payment server.');
+      return;
+    }
+
+    if (!data?.success || !data.order?.id) {
+      addNotif('⚠️ Payment order failed on the server. Check the Razorpay keys in server/.env (auth error?).');
+      return;
+    }
+    if (String(data.order.id).startsWith('mock_')) {
+      addNotif('⚠️ Razorpay not configured on the server (got a mock order). Set RAZORPAY keys and restart.');
+      return;
+    }
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -1155,11 +1170,25 @@ export default function App() {
       currency: data.order.currency,
       order_id: data.order.id,
       name: 'Shamutha AI EdTech',
-
-      handler: function (response) {
-        alert('Payment Successful');
-        console.log(response);
-      }
+      description: course?.title || 'Course Enrollment',
+      handler: async function (response) {
+        addNotif(`✅ Payment successful — ${response.razorpay_payment_id}`);
+        if (course) {
+          try {
+            await fetch(`${API_BASE}/courses/enroll`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ courseId: course.id })
+            });
+          } catch { }
+          setCourses(prev => prev.map(c => c.id === course.id ? { ...c, enrolled: true } : c));
+          addNotif(`📚 Enrolled in ${course.title}!`);
+        }
+      },
+      modal: {
+        ondismiss: () => addNotif('Payment cancelled.')
+      },
+      theme: { color: '#6366f1' }
     };
 
     const paymentObject = new window.Razorpay(options);
@@ -2427,7 +2456,7 @@ export default function App() {
                       {c.enrolled ? (
                         <button className="btn-secondary" style={{ fontSize: '11px', pointerEvents: 'none', color: 'var(--success)' }}>✓ Continue</button>
                       ) : (
-                        <button className="btn-premium" style={{ fontSize: '11px', padding: '6px 14px' }} onClick={() => { setCheckoutCourse(c); setShowPaymentModal(true); setPaymentSuccess(false); setCardNumber(''); }}>Enroll Now</button>
+                        <button className="btn-premium" style={{ fontSize: '11px', padding: '6px 14px' }} onClick={() => processPaymentIntegration(c)}>Enroll Now</button>
                       )}
                     </div>
                   </div>

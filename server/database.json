@@ -186,7 +186,9 @@
       "createdAt": "2026-05-31T09:18:31.246Z"
     }
   ],
-  "enrollments": [],
+  "enrollments": [
+    "c2"
+  ],
   "jobApplications": [
     {
       "id": "mpv8szek",
