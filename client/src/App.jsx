@@ -1130,42 +1130,42 @@ export default function App() {
   });
 
   const processPaymentIntegration = async () => {
-  const loaded = await loadRazorpayScript();
+    const loaded = await loadRazorpayScript();
 
-  if (!loaded) {
-    alert('Razorpay load failed');
-    return;
-  }
-
-  const res = await fetch(`${API_BASE}/payment/create-order`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      amount: 500
-    })
-  });
-
-  const data = await res.json();
-
-  const options = {
-    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-    amount: data.order.amount,
-    currency: data.order.currency,
-    order_id: data.order.id,
-    name: 'Shamutha AI EdTech',
-
-    handler: function (response) {
-      alert('Payment Successful');
-      console.log(response);
+    if (!loaded) {
+      alert('Razorpay load failed');
+      return;
     }
+
+    const res = await fetch(`${API_BASE}/payment/create-order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: 500
+      })
+    });
+
+    const data = await res.json();
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: data.order.amount,
+      currency: data.order.currency,
+      order_id: data.order.id,
+      name: 'Shamutha AI EdTech',
+
+      handler: function (response) {
+        alert('Payment Successful');
+        console.log(response);
+      }
+    };
+
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
   };
 
-  const paymentObject = new window.Razorpay(options);
-  paymentObject.open();
-};
-  
   const startScreenMonitoring = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
@@ -1187,7 +1187,7 @@ export default function App() {
 
   const stopScreenMonitoring = () => {
     if (screenVideoRef.current) {
-        screenVideoRef.current.srcObject = null;
+      screenVideoRef.current.srcObject = null;
     }
     screenStream?.getTracks().forEach(track => track.stop());
     setScreenStream(null);
@@ -1281,7 +1281,7 @@ export default function App() {
               <span style={{ fontSize: '12px', background: 'rgba(57,245,212,0.15)', color: 'var(--success)', padding: '3px 10px', borderRadius: '4px' }}>🔴 LIVE</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <button 
+              <button
                 onClick={screenMonitorActive ? stopScreenMonitoring : startScreenMonitoring}
                 style={{ background: screenMonitorActive ? 'rgba(57,245,212,0.15)' : 'rgba(255,255,255,0.08)', border: 'none', color: screenMonitorActive ? 'var(--success)' : 'white', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
               >
@@ -1293,7 +1293,7 @@ export default function App() {
                   ⚠️ {proctorWarnings.length}/{MAX_VIOLATIONS} violations
                 </span>
               )}
-              
+
               <button onClick={() => setInterviewFullscreen(false)} style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: 'white', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
                 <Minimize2 size={14} /> Exit Fullscreen
               </button>
@@ -1786,9 +1786,9 @@ export default function App() {
                   </div>
 
                   <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <button className="btn-premium" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }} onClick={handleGenerateMockTest}>
+                    {/* <button className="btn-premium" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }} onClick={handleGenerateMockTest}>
                       <Sparkles size={16} /> Generate Test
-                    </button>
+                    </button> */}
 
                     <button className="btn-secondary" style={{ width: '100%' }} onClick={() => setMockTestState('history')}>
                       View Test History
