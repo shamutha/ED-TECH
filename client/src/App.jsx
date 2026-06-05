@@ -14,7 +14,10 @@ import callFlashDetector from './flashProxy';
 import LiveClassesModule from './LiveClassesModule';
 import { addAppliedJob, setResumeField, setResumeData, setPlagiarismResult, setSubscriptionPlan, activateSubscription, setPaymentMethod } from './store.js';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001';
+// Default to same-origin ('') so the app works behind a reverse proxy (nginx/Vite)
+// that forwards /api and /socket.io to the backend. Set VITE_BACKEND_URL to point
+// at an absolute backend URL only when not using a proxy.
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? '';
 const API_BASE = `${BACKEND_URL}/api`;
 
 // ─────────────────────────────────────────
@@ -51,20 +54,66 @@ const INITIAL_PROBLEMS = {
 const INITIAL_COURSES = [
   { id: 'c1', title: 'The Complete 2024 Web Development Bootcamp', instructor: 'Dr. Angela Yu', category: 'Development', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/1565838_e54e_16.jpg', progress: 45, enrolled: true, rating: 4.7, students: 470093, hours: 62, lectures: 374 },
   { id: 'c2', title: 'React - The Complete Guide (incl Hooks, React Router, Redux)', instructor: 'Maximilian Schwarzmüller', category: 'Frontend', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1362070_b9a1_2.jpg', progress: 0, enrolled: false, rating: 4.6, students: 218000, hours: 68, lectures: 692 },
-  { id: 'c3', title: 'Node.js, Express, MongoDB & More: The Complete Bootcamp', instructor: 'Jonas Schmedtmann', category: 'Backend', price: '₹399', image: 'https://img-c.udemycdn.com/course/240x135/1672410_f3a3_4.jpg', progress: 0, enrolled: false, rating: 4.8, students: 93000, hours: 42, lectures: 228 },
+  { id: 'c3', title: 'Node.js, Express, MongoDB & More: The Complete Bootcamp', instructor: 'Jonas Schmedtmann', category: 'Backend', price: '₹399', image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=225&fit=crop', progress: 0, enrolled: false, rating: 4.8, students: 93000, hours: 42, lectures: 228 },
   { id: 'c4', title: 'JavaScript: The Complete Guide 2024 (Beginner + Advanced)', instructor: 'Maximilian Schwarzmüller', category: 'Development', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/2508942_11d3.jpg', progress: 10, enrolled: true, rating: 4.6, students: 148000, hours: 52, lectures: 614 },
   { id: 'c5', title: 'Python Bootcamp: From Zero to Hero in Python', instructor: 'Jose Portilla', category: 'Python', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/903744_8eb2.jpg', progress: 0, enrolled: false, rating: 4.6, students: 540000, hours: 24, lectures: 155 },
   { id: 'c6', title: 'Machine Learning A-Z: AI, Python & R + ChatGPT Prize', instructor: 'Kirill Eremenko', category: 'AI / ML', price: '₹549', image: 'https://img-c.udemycdn.com/course/240x135/950390_270f_3.jpg', progress: 0, enrolled: false, rating: 4.5, students: 311000, hours: 44, lectures: 375 },
-  { id: 'c7', title: 'Docker & Kubernetes: The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevOps', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/2035922_6c6b.jpg', progress: 0, enrolled: false, rating: 4.7, students: 97000, hours: 23, lectures: 262 },
+  { id: 'c7', title: 'Docker & Kubernetes: The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevOps', price: '₹449', image: 'https://images.unsplash.com/photo-1605745341112-85968b19335b?w=400&h=225&fit=crop', progress: 0, enrolled: false, rating: 4.7, students: 97000, hours: 23, lectures: 262 },
   { id: 'c8', title: 'The Data Science Course: Complete Data Science Bootcamp', instructor: 'Soledad Galli', category: 'Data Science', price: '₹499', image: 'https://img-c.udemycdn.com/course/240x135/1754098_e0df_3.jpg', progress: 0, enrolled: false, rating: 4.5, students: 130000, hours: 29, lectures: 450 },
   { id: 'c9', title: 'AWS Certified Solutions Architect - Associate 2024', instructor: 'Stephane Maarek', category: 'Cloud', price: '₹549', image: 'https://img-c.udemycdn.com/course/240x135/362328_91f3_10.jpg', progress: 0, enrolled: false, rating: 4.7, students: 214000, hours: 27, lectures: 388 },
-  { id: 'c10', title: 'System Design Interview - An Insider\'s Guide', instructor: 'Alex Xu', category: 'Architecture', price: '₹599', image: 'https://img-c.udemycdn.com/course/240x135/3391238_a026_5.jpg', progress: 0, enrolled: false, rating: 4.6, students: 56000, hours: 18, lectures: 123 },
-  { id: 'c11', title: 'Master the Coding Interview: Data Structures + Algorithms', instructor: 'Andrei Neagoie', category: 'DSA', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1917546_3185_4.jpg', progress: 0, enrolled: false, rating: 4.6, students: 78000, hours: 19, lectures: 261 },
-  { id: 'c12', title: 'TypeScript: The Complete Developer\'s Guide', instructor: 'Stephen Grider', category: 'TypeScript', price: '₹399', image: 'https://img-c.udemycdn.com/course/240x135/2264098_d9f6.jpg', progress: 0, enrolled: false, rating: 4.6, students: 63000, hours: 27, lectures: 263 },
+  { id: 'c10', title: 'System Design Interview - An Insider\'s Guide', instructor: 'Alex Xu', category: 'Architecture', price: '₹599', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=225&fit=crop', progress: 0, enrolled: false, rating: 4.6, students: 56000, hours: 18, lectures: 123 },
+  { id: 'c11', title: 'Master the Coding Interview: Data Structures + Algorithms', instructor: 'Andrei Neagoie', category: 'DSA', price: '₹449', image: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?w=400&h=225&fit=crop', progress: 0, enrolled: false, rating: 4.6, students: 78000, hours: 19, lectures: 261 },
+  { id: 'c12', title: 'TypeScript: The Complete Developer\'s Guide', instructor: 'Stephen Grider', category: 'TypeScript', price: '₹399', image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=400&h=225&fit=crop', progress: 0, enrolled: false, rating: 4.6, students: 63000, hours: 27, lectures: 263 },
   { id: 'c13', title: 'Flutter & Dart — The Complete App Development Course', instructor: 'Dr. Angela Yu', category: 'Mobile', price: '₹449', image: 'https://img-c.udemycdn.com/course/240x135/1708340_7108_3.jpg', progress: 0, enrolled: false, rating: 4.7, students: 85000, hours: 33, lectures: 199 },
-  { id: 'c14', title: 'SQL & PostgreSQL for Beginners: Become an SQL Expert', instructor: 'Jon Avis', category: 'Database', price: '₹349', image: 'https://img-c.udemycdn.com/course/240x135/1965540_f5aa_2.jpg', progress: 0, enrolled: false, rating: 4.5, students: 49000, hours: 11, lectures: 109 },
-  { id: 'c15', title: 'Git & GitHub — The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevTools', price: '₹299', image: 'https://img-c.udemycdn.com/course/240x135/3311840_b0a8.jpg', progress: 0, enrolled: false, rating: 4.8, students: 39000, hours: 6, lectures: 80 },
+  { id: 'c14', title: 'SQL & PostgreSQL for Beginners: Become an SQL Expert', instructor: 'Jon Avis', category: 'Database', price: '₹349', image: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=225&fit=crop', progress: 0, enrolled: false, rating: 4.5, students: 49000, hours: 11, lectures: 109 },
+  { id: 'c15', title: 'Git & GitHub — The Practical Guide', instructor: 'Maximilian Schwarzmüller', category: 'DevTools', price: '₹299', image: 'https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&h=225&fit=crop', progress: 0, enrolled: false, rating: 4.8, students: 39000, hours: 6, lectures: 80 },
 ];
+
+// Category → gradient + emoji glyph, used to build an on-brand fallback tile.
+const CATEGORY_STYLE = {
+  'Development':   { from: '#00d2ff', to: '#3a47d5', glyph: '💻' },
+  'Frontend':     { from: '#9d4edd', to: '#3a47d5', glyph: '🎨' },
+  'Backend':      { from: '#11998e', to: '#38ef7d', glyph: '🛠️' },
+  'Python':       { from: '#306998', to: '#ffd43b', glyph: '🐍' },
+  'AI / ML':      { from: '#f7971e', to: '#ffd200', glyph: '🤖' },
+  'DevOps':       { from: '#2193b0', to: '#6dd5ed', glyph: '🐳' },
+  'Data Science': { from: '#834d9b', to: '#d04ed6', glyph: '📊' },
+  'Cloud':        { from: '#ff9966', to: '#ff5e62', glyph: '☁️' },
+  'Architecture': { from: '#355c7d', to: '#c06c84', glyph: '🏗️' },
+  'DSA':          { from: '#00b09b', to: '#96c93d', glyph: '🧩' },
+  'TypeScript':   { from: '#2f74c0', to: '#235a97', glyph: '📘' },
+  'Mobile':       { from: '#43cea2', to: '#185a9d', glyph: '📱' },
+  'Database':     { from: '#4568dc', to: '#b06ab3', glyph: '🗄️' },
+  'DevTools':     { from: '#5a5f73', to: '#232526', glyph: '🔧' }
+};
+
+// Build an offline SVG placeholder (data URI) for a course whose image fails to load.
+function coursePlaceholder(course) {
+  const s = CATEGORY_STYLE[course?.category] || { from: '#1a1030', to: '#3a2a6a', glyph: '🎓' };
+  const esc = (t) => String(t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Wrap the title into up to 2 short lines.
+  const words = esc(course?.title).split(' ');
+  const lines = [];
+  let cur = '';
+  for (const w of words) {
+    if ((cur + ' ' + w).trim().length > 24 && cur) { lines.push(cur.trim()); cur = w; }
+    else cur = (cur + ' ' + w).trim();
+    if (lines.length === 2) break;
+  }
+  if (cur && lines.length < 2) lines.push(cur.trim());
+  const titleTspans = lines.map((l, i) => `<tspan x="200" dy="${i === 0 ? 0 : 20}">${l}</tspan>`).join('');
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">` +
+    `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">` +
+    `<stop offset="0%" stop-color="${s.from}"/><stop offset="100%" stop-color="${s.to}"/></linearGradient></defs>` +
+    `<rect width="400" height="225" fill="url(#g)"/>` +
+    `<text x="200" y="92" font-size="52" text-anchor="middle">${s.glyph}</text>` +
+    `<text x="200" y="132" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Arial, sans-serif" letter-spacing="1">${esc(course?.category || 'COURSE').toUpperCase()}</text>` +
+    `<text x="200" y="162" font-size="13" fill="#ffffffcc" text-anchor="middle" font-family="Arial, sans-serif">${titleTspans}</text>` +
+    `</svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
 
 const INITIAL_JOBS = [
   { id: 'j1', company: 'Google', role: 'Full Stack Engineer (L4)', location: 'Mountain View, CA', salary: '$180k-$210k', requiredSkills: ['React', 'Node.js', 'MongoDB', 'Redis'], matchRate: 90 },
@@ -359,7 +408,7 @@ export default function App() {
   useEffect(() => {
     if (socketRef.current) return;
 
-    const s = io(BACKEND_URL, {
+    const s = io(BACKEND_URL || '/', {
       path: '/socket.io',
       transports: ['websocket', 'polling'],
       autoConnect: true,
@@ -2423,7 +2472,7 @@ export default function App() {
                       src={c.image}
                       alt={c.title}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={e => { e.target.style.display = 'none'; }}
+                      onError={e => { if (!e.target.dataset.fb) { e.target.dataset.fb = '1'; e.target.src = coursePlaceholder(c); } }}
                     />
                     <span style={{ position: 'absolute', top: '8px', left: '8px', fontSize: '10px', background: 'rgba(0,0,0,0.75)', color: 'white', padding: '3px 8px', borderRadius: '4px', fontWeight: 600 }}>{c.category}</span>
                     {c.enrolled && <span style={{ position: 'absolute', top: '8px', right: '8px', fontSize: '10px', background: 'var(--success)', color: 'white', padding: '3px 8px', borderRadius: '4px' }}>Enrolled</span>}
@@ -2472,7 +2521,7 @@ export default function App() {
                     <X style={{ cursor: 'pointer' }} onClick={() => { setShowPaymentModal(false); setPaymentSuccess(false); setCardNumber(''); }} />
                   </div>
                   <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    <img src={checkoutCourse?.image} alt="" style={{ width: '64px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={e => e.target.style.display = 'none'} />
+                    <img src={checkoutCourse?.image} alt="" style={{ width: '64px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={e => { if (!e.target.dataset.fb && checkoutCourse) { e.target.dataset.fb = '1'; e.target.src = coursePlaceholder(checkoutCourse); } }} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: '12px', fontWeight: 600 }}>{checkoutCourse?.title}</p>
                       <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{checkoutCourse?.instructor}</p>
