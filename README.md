@@ -70,3 +70,41 @@ The repository is organized into two main workspaces:
     ```
 
 The platform should now be accessible locally!
+
+## 📸 Application Screenshots
+
+Here are the screenshots showcasing the features of the Shamutha EdTech Super Platform:
+
+### 🖥️ Dashboard & Marketplace
+*   **Student Dashboard**:
+    ![Student Dashboard](./docs/screenshots/dashboard.png)
+*   **Course Marketplace**:
+    ![Course Marketplace](./docs/screenshots/course_marketplace.png)
+
+### 💻 Coding Platform & Battles
+*   **Practice Coding Platform**:
+    ![Coding Platform](./docs/screenshots/coding_platform.png)
+*   **Coding Battles (Lobby & Matchmaking)**:
+    ![Coding Battles Matchmaking](./docs/screenshots/coding_battles_1.png)
+*   **Coding Battles (Arena & Challenge Editor)**:
+    ![Coding Battles Arena](./docs/screenshots/coding_battles_2.png)
+*   **Leaderboard**:
+    ![Leaderboard](./docs/screenshots/leaderboard.png)
+
+### 🤖 AI-Powered Features
+*   **AI Mock Interview Simulator**:
+    ![AI Interview Simulator](./docs/screenshots/ai_interview.png)
+*   **AI-Generated Mock Tests**:
+    ![AI Mock Tests](./docs/screenshots/mock_test.png)
+*   **AI Resume Builder**:
+    ![AI Resume Builder](./docs/screenshots/resume_builder.png)
+
+### 👥 Classroom, Career & Analytics
+*   **Live Classes & Webinars**:
+    ![Live Classes & Webinars](./docs/screenshots/live_classes.png)
+*   **Placement Portal**:
+    ![Placement Portal](./docs/screenshots/placement_portal.png)
+*   **Performance Analytics & Progress**:
+    ![Performance Analytics](./docs/screenshots/performance_analytics.png)
+*   **Verifiable Certificates**:
+    ![Verifiable Certificates](./docs/screenshots/certificate.png)

@@ -1,18 +1,18 @@
 version: '3.8'
 
 services:
-  # mongodb:
-  #   image: mongo:latest
-  #   container_name: shamutha-mongodb
-  #   ports:
-  #     - "27018:27017"
-  #   volumes:
-  #     - mongo-data:/data/db
-  #   healthcheck:
-  #     test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  mongodb:
+    image: mongo:latest
+    container_name: shamutha-mongodb
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:alpine
@@ -20,7 +20,7 @@ services:
     ports:
       - "6380:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -33,9 +33,11 @@ services:
       - "5010:5001"
     environment:
       - PORT=5001
-      # - MONGO_URI=mongodb://mongodb:27018/shamutha
+      - MONGO_URI=mongodb://mongodb:27018/shamutha
       - MONGO_URI=mongodb+srv://shamuthabadhusha:Shazia28@cluster0.sti2uio.mongodb.net/shamuthaEdTech
-      - REDIS_URL=redis://redis:6380
+      - REDIS_URL=redis://redis:6379
+      - RAZORPAY_KEY_ID=somekey
+      - RAZORPAY_KEY_SECRET=somesecret
     depends_on:
       # mongodb:
       #   condition: service_healthy
@@ -48,6 +50,8 @@ services:
     container_name: shamutha-client
     ports:
       - "3010:3000"
+    environment:
+      - VITE_RAZORPAY_KEY_ID=test_key_id
     depends_on:
       - server
 
