@@ -108,3 +108,19 @@ Here are the screenshots showcasing the features of the Shamutha EdTech Super Pl
     ![Performance Analytics](./docs/screenshots/performance_analytics.png)
 *   **Verifiable Certificates**:
     ![Verifiable Certificates](./docs/screenshots/certificate.png)
+
+### 💳 Payments & Checkout (Razorpay)
+End-to-end course enrollment powered by the Razorpay test gateway:
+
+*   **Course Marketplace (Enroll Now)**:
+    ![Course Marketplace](./docs/screenshots/payment/payment_marketplace.png)
+*   **Razorpay Checkout — Payment Options**:
+    ![Razorpay Checkout](./docs/screenshots/payment/payment_checkout.png)
+*   **Save Card (RBI Guidelines)**:
+    ![Save Card Consent](./docs/screenshots/payment/payment_save_card.png)
+*   **OTP / 3-D Secure Authentication**:
+    ![OTP Authentication](./docs/screenshots/payment/payment_otp.png)
+*   **Confirming Payment**:
+    ![Confirming Payment](./docs/screenshots/payment/payment_processing.png)
+*   **Payment Successful**:
+    ![Payment Successful](./docs/screenshots/payment/payment_success.png)
